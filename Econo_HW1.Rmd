@@ -1,0 +1,317 @@
+---
+title: "HW1_econometric"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### 2013-10299 오동건
+#### C2
+
+```{r}
+library(wooldridge)
+data("hprice1")
+attach(hprice1)
+model = lm(price~sqrft+bdrms)
+detach(hprice1)
+summary(model)
+```
+(i) price = 0.1284sqrft + 15.1982bdrms  
+(ii) 15.1982, $15,198
+```{r}
+0.1284*140+15.20*1
+```
+
+(iii) $33,176 (ii)과 달리 침실이 늘어나면서 면적도 늘어나서 가격에 더 큰 영향을 주었다. 
+(iv) 63.19%
+
+```{r}
+predict(model,data.frame(sqrft = 2438,bdrms = 4))
+```
+(v) $354,605
+
+```{r}
+residuals(model)[1]
+
+```
+(vi) 이 회귀식으로 예측된 값으로 보면 $54,605 싸게 샀다고 할 수 있지만, 집가격에 침실수와 면적만 영향을 미치는 것은 아닐 것이다. 따라서 단정 지을 수는 없고 다른 변수의 영향은 어떤 지 검토해봐야 한다.    
+<br>
+
+#### C3
+
+```{r}
+data("ceosal2")
+attach(ceosal2)
+
+model = lm(log(salary)~log(sales)+log(mktval))
+summary(model)
+```
+(i) log(salary) = 0.162log(sales)+0.107log(mktval)+4.69
+
+(ii)
+```{r}
+model2 = lm(log(salary)~log(sales)+log(mktval)+profits)
+summary(model2)
+```
+profit에서 음수 값을 갖는 데이터가 있기 때문에 log를 사용할 수 없다. R squre에 따라 salary의 변동량의 30%정도를 설명하므로 모든 변동을 설명한다고 보기는 부족하다. 
+
+(iii)
+```{r}
+model3 = lm(log(salary)~log(sales)+log(mktval)+profits+ceoten)
+summary(model3)
+```
+
+ceoten의 회귀계수가 0.0117정도이다. 이는 1년이 늘어날 수록 salary의 예측값이 1.17% 정도 늘어난다는 의미이다. 
+
+(iv)
+```{r}
+cor(log(mktval),profits)
+```
+두 변수의 상관계수는 0.78정도로 상당히 높은 편이다. 두 설명변수의 상관계수가 높으면 다중공선성이 있다고 한다. 다중공선성이 커지면 추정값에 분산이 커진다. 
+
+
+#### C4
+(i)
+```{r}
+detach(ceosal2)
+data("attend")
+
+summary(attend)
+```
+순서대로 최소값, 평균, 최댓값  
+atndrte: 6.25,81.7,100  
+priGPA: 0.857,2.587,3.93  
+ACT: 13,22.51,32 
+
+(ii)
+```{r}
+model = lm(atndrte~priGPA+ACT, data = attend)
+summary(model)
+```
+atndrte = 75.70 + 17.26priGPA - 1.72 ACT  
+intercept는 두 설명변수가 0일 때의 예측값으로 priGPA가 0이고 ACT가 0일 때 atndrte의 예측값이 75.7정도 된다는 의미로 그 이상으로 중요한 부분은 아니다.  
+
+(iii) priGPA는 직전 학점이고 ACT는 대입성적에 대응한다. 직전 학기 학점이 높은 학생이 출석률이 높은 것은 자명한 결과로 받아드려진다. 다만, 대입성적이 높을 수록 출석률이 떨어진다는 사실은 논의할 필요가 있어보인다.
+대입성적이 높은 학생일 수록 출석을 해서 수업을 듣는 것을 덜 중요하게 생각한다고 추론 할 수 있으나, 다른 요인들도 있을 수 있기 때문에 검증이 필요하다.  
+
+(iv)
+```{r}
+predict(model,newdata = data.frame(priGPA = 3.65, ACT =20))
+attend[attend$priGPA > 3.64 & attend$ACT == 20,]
+```
+atndrte가 104%로 추정되었다. 출석률은 100%를 넘을 수 없다. 따라서 104%라는 수치가 나왔지만 상한이 있기 때문에 출석률을 100%로 이해해야한다. 동일한 설명변수 값을 갖는 학생의 출석률은 87.5%이다. 
+
+(v)
+```{r}
+A = predict(model,newdata = data.frame(priGPA = 3.1, ACT =21))
+B = predict(model,newdata = data.frame(priGPA = 2.1, ACT =26))
+print(A-B)
+```
+A 학생과 B 학생의 차이는 25.843정도다. 
+
+
+#### C5 Confirm the partialling out interpretation of the OLS estimates by explicitly doing the partialling out for Example 3.2. This first requires regressing educ on exper and tenure and saving the residuals, r1. Then, regress log(wage) on r1. Compare the coefficient on r1 with the coefficient on educ in the regression of log(wage) on educ, exper, and tenure.
+
+```{r}
+data("wage2")
+model = lm(educ~exper+tenure, data=wage2)
+r1 = residuals(model)
+
+model2 = lm(log(wage)~r1, data = wage2)
+model3 = lm(log(wage)~educ+exper+tenure, data = wage2)
+print(coef(model))
+print(coef(model2))
+print(coef(model3))
+```
+
+두 결과값이 동일하다. r1은 educ에서 exper와 tenure로 설명되지 않는 부분이다. 따라서 r1에 log(wage)를 회귀하면, 다중회귀와 마찬가지로 다른 변수의 영향이 고정된 상태에서 educ가 log(wage)에 미치는 영향만 반영할 수 있다. 때문에 두 값이 동일하게 나온다. 
+
+
+#### C6
+(i)
+
+```{r}
+model = lm(IQ~educ, data = wage2)
+beta_IQonEduc = coef(model)[2]
+print(beta_IQonEduc)
+```
+
+δ~1 = 3.5334
+
+(ii)
+```{r}
+model = lm(log(wage)~educ, data = wage2)
+beta_logWageonEduc = coef(model)[2]
+print(beta_logWageonEduc)
+```
+b~1 = 0.05984
+
+(iii)
+```{r}
+model = lm(log(wage)~educ+IQ, data = wage2)
+beta_multi = coef(model)[2:3]
+print(beta_multi)
+```
+
+b^1 = 0.03912 b^2 = 0.00586
+
+(iv)
+
+```{r}
+print(beta_multi[1]+beta_multi[2]*beta_IQonEduc)
+print(beta_logWageonEduc)
+
+```
+두 값이 동일하다. 
+
+
+#### C7
+
+(i)
+```{r}
+data("meap93")
+model = lm(math10~log(expend)+lnchprg, data = meap93)
+summary(model)
+```
+math10 = 6.23log(expend)-0.3046(lnchprg)-20.361  
+n = 408, R^2 = 0.18  
+기대했던 바와 같다. expend의 sing이 +이기 때문에, 학생당 지출이 높아지면 수학시험 통과율이 높아진다. 반면 inchprg 즉 빈곤을 가늠할 수 있는 지표의 sign은 -이기 때문에, 이 값이 높아지면 통과율이 낮아진다. 이는 상식과 잘 맞다. 
+
+(ii) What do you make of the intercept you estimated in part (i)? In particular, does it make sense to set the two explanatory variables to zero? [Hint: Recall that log(1)=0.]
+
+intercept는 다른 설명변수들의 값이 0일 때의 종속변수의 값이라고 할 수 있다. 그러나 다른 값이 0일 때, 통과률이 -값을 갖는 것은 상식적으로 말이 안된다. 때문에 하한인 0%로 두고 이해하는 것이 합리적으로 판단된다. 또한 inchprg의 값이 0이 되는 것은 납득할 수 있지만, expend는 학생당 지출금액이기 때문에, 이 값이 1달러가 되는 것은 이해하기 어렵다.  
+
+(iii) Now run the simple regression of math10 on log(expend), and compare the slope coefficient with the estimate obtained in part (i). Is the estimated spending effect now larger or smaller than in part (i)?
+
+```{r}
+model2 = lm(math10~log(expend), data = meap93)
+summary(model2)
+print(coef(model)[2])
+print(coef(model2)[2])
+```
+
+1번 문제에 비해서 회귀계수가 증가했다.  
+
+(iv) Find the correlation between lexpend and lnchprg.Does its sign make sense to you?
+
+```{r}
+cor(meap93$lexpend,meap93$lnchprg)
+```
+회귀계수의 부호가 음수이다. 이는 평균적으로 가난한 학생들이 많은 학교일 수록 학생들에게 지출하는 돈이 적다는 뜻이다. 낙후된 지역일 수록 해당 지역에 있는 학교에 학생 또한 상대적으로 가난할 것이고 가난한 지역의 학교는 세금을 많이 투입할 수 없기 때문에 학생들에게 지출하는 비용이 상대적으로 적을 것이다. 때문에 회귀계수의 부호가 음수인 것은 합리적인 결과다. 
+
+(v) Use part (iv) to explain your findings in part (iii).
+
+iii의 log(expend)의 회귀계수가 i에 비해 증가했는데, 이는 log(expend)와 lnchprg의 상관계수가 음수인것과 관련된다. C6에서 확인했듯 
+(simple)b1 = (mutiple)b1+ (beta:regession of x2 on x1)(mutiple)b2이다. lexpend와 inchprg의 상관계수가 음수이므로 (단순회귀는 상관계수가 곧 회귀계수) simple b1이 multiple b1보다 큰 값을 갖게 되었다고 할 수 있다. 
+
+
+#### C8
+Use the data in DISCRIM.RAW to answer this question. These are zip code???level data on prices for various items at fast-food restaurants, along with characteristics of the zip code population, in New Jersey and Pennsylvania. The idea is to see whether fast-food restaurants charge higher prices in areas with a larger concentration of blacks.
+
+```{r}
+data("discrim")
+```
+
+(i) Find the average values of prpblck and income in the sample, along with their standard deviations. What are the units of measurement of prpblck and income?
+
+```{r}
+print(mean(discrim$prpblck, na.rm = T))
+print(sd(discrim$prpblck, na.rm = T))
+
+print(mean(discrim$income, na.rm = T))
+print(sd(discrim$income, na.rm = T))
+```
+prpblack의 평균은 0.1135이고 표준편차는 0.18정도이다. income의 평균은 47053, 표준편차는 13179정도다. 측정단위는 각각 비율과 $이다. 
+
+
+(ii) Consider a model to explain the price of soda, psoda, in terms of the proportion of the population that is black and median income:psoda 5 b0 1 b1prpblck 1 b2income 1 u. Estimate this model by OLS and report the results in equation form, including the sample size and R-squared. (Do not use scientific notation when reporting the esti???mates.) Interpret the coefficient on prpblck. Do you think it is economically large?
+
+```{r}
+model = lm(psoda~prpblck+income, data = discrim)
+summary(model)
+```
+psoda = 0.956+0.115 prpblack+0.0000016 income
+n = 401, R square = 0.064
+
+흑인 비율이 1%point 증가하면 즉 0.01이 오르면, 소다의 가격이 0.00115달러 증가한다는 의미이다. 다른 조건이 고정된 상태에서 흑인 비율이 0%인 지역과 100%인 지역을 비교해보면, 각각 prpblack의 값은 0,1이 되는데, 이 때 소다 가격이 차이는 0.115달러에 불과하다. 
+
+(iii) Compare the estimate from part (ii) with the simple regression estimate from psoda on prpblck. Is the discrimination effect larger or smaller when you control for income?
+
+```{r}
+model2 = lm(psoda~prpblck, data = discrim)
+summary(model2)
+```
+값이 줄어들었다. 그 이유는 앞선 문제에서 확인했던,(simple)b1 = (mutiple)b1+ (beta:regession of x2 on x1)(mutiple)b2 에서 추론할 수 있는데, 두 변수의 상관관계가 음수이기 때문에 단순회귀 회귀계수값이 줄어들었다고 할 수 있다. 
+
+(iv) A model with a constant price elasticity with respect to income may be more appropriate. Report estimates of the model log(psoda) 5 b0 1 b1prpblck 1 b2log(income) 1 u.If prpblck increases by .20 (20 percentage points), what is the estimated percent???age change in psoda? (Hint: The answer is 2.xx, where you fill in the “xx.”)
+
+```{r}
+model3 = lm(log(psoda)~prpblck+log(income), data = discrim)
+summary(model3)
+```
+만일 흑인비율이 0.2증가했다면, 소다 가격은 0.12158*0.2 = 0.24316 또는 2.43퍼센트 증가했다고 할 수 있다.  
+
+(v) Now add the variable prppov to the regression in part (iv). What happens to b^ prpblck?
+
+```{r}
+model4 = lm(log(psoda)~prpblck+log(income)+prppov, data = discrim)
+summary(model4)
+```
+prpblck의 회귀계수가 감소했다. 
+
+(vi) Find the correlation between log(income) and prppov. Is it roughly what you expected?
+
+```{r}
+discrim = discrim[!is.na(discrim$income),]
+cor(log(discrim$income),discrim$prppov)
+```
+상당히 높은 음의 상관관계를 갖는다. 빈곤율이 높을수록 소득이 적어지는 것은 기대했던 바와 같다. 빈곤율이 결국 소득에 따라 정해지기 때문이다. 
+
+(vii) Evaluate the following statement: “Because log(income) and prppov are so highly correlated, they have no business being in the same regression.”
+
+서로 밀접한 상관관계를 갖는 두 변수를 같은 회귀모델에 넣으면 모델의 분산이 커지게 된다. 따라서 정확한 예측이 목적이라면 두 변수를 그대로 같이 넣는 것은 적절하지 못하다.     
+다만, 본 문제에서 회귀의 목적이 예측을 정확하게 하는 것이 아니라 흑인비율에 따른 가격차별이 존재하는 지를 검토하기 위함이니깐, 인과관계를 밝히기 위해서 두 변수를 함께 넣고 회귀를 한 결과를 사용해볼 수 있다.
+
+
+#### C9
+(i) Estimate the equation gift, mailsyear, giftlast, propresp,by OLS and report the results in the usual way, including the sample size and 
+R-squared. How does the R-squared compare with that from the simple regression that omits giftlast and propresp?
+
+```{r}
+data=('charity')
+model = lm(gift~mailsyear+giftlast+propresp, data = charity)
+summary(model)
+```
+gift = -4.55+ 2.17mailyear + 0.0059giftlast + 15.36proprsp  
+n = 4,268, R square = 0.0834
+
+```{r}
+summary(lm(gift~mailsyear, data = charity))
+```
+단순회귀에서는 R^2 값이 0.014 정도였는데, 다중회귀에서는 0.083으로 증가했다. 
+
+(ii) Interpret the coefficient on mailsyear. Is it bigger or smaller than the correspond???ing simple regression coefficient?
+
+다른 변수들이 고정되어 있을때, 평균적으로 mailing year가 1년 증가할 수록 gift의 값이 2.17만큼 증가한다는 의미이다.  단순에서는 회귀계수가 2.65인 반면 다중에서는 2.17로 줄어들었다. 
+
+
+(iii) Interpret the coefficient on propresp. Be careful to notice the units of measure???ment of propresp.
+
+propresp는 측정단위가 비율이다. 따라서 propresp가 0.1증가하는 것은 비율이 10%포인트 만큼 증가한다는 의미이고 이에 따라 gift의 값은 1.54정도 증가한다. 
+
+(iv) Now add the variable avggift to the equation. What happens to the estimated effect of mailsyear?
+
+```{r}
+model2 = lm(gift~mailsyear+giftlast+propresp+avggift, data = charity)
+summary(model2)
+```
+mailyear의 영향이 줄어들었다.  (2.17 -> 1.2)
+
+
+(v) In the equation from part (iv), what has happened to the coefficient on giftlast? What do you think is happening?
+
+giftlast의 값이 음수가 되었다. 두 변수가 음의 상관관계를 갖는 것은 지난 번 gift가 작으면 다음 번에는 gift의 값이 커지는 경향이 있다고 해석할 수 있다. 다만, 회귀계수의 값이 작기 때문에 이 값 자체는 유의미하다고 하더라도 큰 영향을 미친다고는 볼 수 없다고 생각한다. 
+
