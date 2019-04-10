@@ -25,8 +25,8 @@ def range2(*arg):
         raise TypeError()
         
     return mylist
-                    
-range(1,2,3,5)
+    
+
 # 과제2
     
 f = open(r'C:\Users\dongkeon\Desktop\abc.txt')
