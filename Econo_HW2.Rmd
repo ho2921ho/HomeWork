@@ -1,0 +1,90 @@
+---
+title: "Econometric_HW2"
+output: html_document
+---
+
+```{r}
+library(wooldridge)
+data("vote1")
+library(car)
+```
+
+#### C1
+
+(i) What is the interpretation of b1?
+<br>
+expendA가 1%만큼  증가하면, voteA가 b1/100만큼 변화한다. 단 본 문제에서 voteA의 단위가 %이기 때문에, b1/100 %포인트 만큼 변화했다고 할 수 있다. 
+
+(ii) In terms of the parameters, state the null hypothesis that a 1% increase in A’s ex???penditures is offset by a 1% increase in B’s expenditures.
+
+귀무가설은 아래와 같다. 
+H0: b1 = -b2
+
+(iii) Estimate the given model using the data in VOTE1.RAW and report the results in usual form. Do A’s expenditures affect the outcome? What about B’s expendi???tures? Can you use these results to test the hypothesis in part (ii)?
+
+```{r}
+model = lm(voteA~log(expendA)+log(expendB)+prtystrA, data = vote1)
+summary(model)
+```
+
+voteA = 45.08+6.083log(expendA)-6.615log(expendB)+0.152 prtystrA
+n = 173, R2 = 0.793
+
+결과를 보면, 두 변수의 t-test결과 모두 유의미하게 나온다. 또한 두 변수의 부호가 반대일 뿐 유사한 값을 갖는다. 따라서 두 변수 모두 결과에 영향을 미친다고 할 수 있다.  또한 두 변수의 절대값이 비슷하기 때문에, 귀무가설을 기각하지 않을 수 있고 의심해볼 수 있다. 하지만, 이 결과를 통해서는 각각의 변수가 유의미하다는 것만 확인할 수 있을 뿐이다. 따라서 2번 문제에서 제시한 가설을 테스트하기 위해서는 다른 작업이 필요하다. 
+
+(iv) Estimate a model that directly gives the t statistic for testing the hypothesis in part (ii). What do you conclude? (Use a two-sided alternative.)
+
+```{r}
+x1 = log(vote1$expendA)
+x2 = log(vote1$expendB)-log(vote1$expendA)
+model2 = lm(voteA~x1+x2+ prtystrA, data = vote1)
+summary(model2)
+```
+ii에서 주장한 귀무가설은 b1+b2 = 0 과 동일하다. b1+b2를 B1이라고 두고 이를 포함하는 회귀식을 만든 결과, p-value 값이 0.3이상으로 높은 수준이다. 따라서 귀무가설을 기각할 수 없기 때문에, b1 - -b2라는 귀무가설을 채택할 수 있다.
+
+#### C3
+
+(i) You are interested in estimating and obtaining a confidence interval for the percent???age change in price when a 150-square-foot bedroom is added to a house. In decimal 
+form, this is u1 5 150b1 1 b2. Use the data in HPRICE1.RAW to estimate u1.
+
+```{r}
+lm1 = lm(log(hprice1$price)~hprice1$sqrft+hprice1$bdrms)
+summary(lm1)
+```
+b1 = 0.000379
+b2 = 0.0296
+B1 = 150b1+b2이므로 B1 = 0.086 따라서 150평방미터의 침실이 추가된다면, 
+집가격은 8.6% 상승한다. 
+
+(ii) Write b2 in terms of B1 and b1 and plug this into the log(price) equation.
+
+b2 = B1-150b1
+
+log(price) = b0+b1(sqrft-150bdrms)+B1bdrms+u
+
+(iii) Use part (ii) to obtain a standard error for ??B1 and use this standard error to construct a 95% confidence interval.
+
+```{r}
+x1 = hprice1$sqrft-150*hprice1$bdrms
+x2 = hprice1$bdrms
+
+lm2 = lm(log(hprice1$price)~x1+x2)
+summary(lm2)
+```
+
+se(B1)은 0.0268정도다. 
+
+```{r}
+confint(lm2)
+```
+신뢰구간은 (0.0326,0.139) 이다. 
+
+#### C5
+
+#### C6
+
+#### C7
+
+#### C8
+
+#### C11
