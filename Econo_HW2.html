@@ -231,53 +231,448 @@ summary(model)</code></pre>
 ## Multiple R-squared:  0.7926, Adjusted R-squared:  0.7889 
 ## F-statistic: 215.2 on 3 and 169 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>voteA = 45.08+6.083log(expendA)-6.615log(expendB)+0.152 prtystrA n = 173, R2 = 0.793</p>
-<p>결과를 보면, 두 변수의 t-test결과 모두 유의미하게 나온다. 또한 두 변수의 부호가 반대일 뿐 유사한 값을 갖는다. 따라서 두 변수 모두 결과에 영향을 미친다고 할 수 있다. 다만, 이 결과를 통해서는 각각의 변수가 유의미하다는 것만 확인할 수 있을 뿐이다. 따라서 2번 문제에서 제시한 가설을 테스트하기 위해서는 다른 작업이 필요하다.</p>
+<p>결과를 보면, 두 변수의 t-test결과 모두 유의미하게 나온다. 또한 두 변수의 부호가 반대일 뿐 유사한 값을 갖는다. 따라서 두 변수 모두 결과에 영향을 미친다고 할 수 있다. 또한 두 변수의 절대값이 비슷하기 때문에, 귀무가설을 기각하지 않을 수 있고 의심해볼 수 있다. 하지만, 이 결과를 통해서는 각각의 변수가 유의미하다는 것만 확인할 수 있을 뿐이다. 따라서 2번 문제에서 제시한 가설을 테스트하기 위해서는 다른 작업이 필요하다.</p>
 <ol start="4" style="list-style-type: lower-roman">
 <li>Estimate a model that directly gives the t statistic for testing the hypothesis in part (ii). What do you conclude? (Use a two-sided alternative.)</li>
 </ol>
-<pre class="r"><code>model2 = lm(voteA~log(expendA)+(log(expendB)-log(expendA))+ prtystrA, data = vote1)
+<pre class="r"><code>x1 = log(vote1$expendA)
+x2 = log(vote1$expendB)-log(vote1$expendA)
+model2 = lm(voteA~x1+x2+ prtystrA, data = vote1)
 summary(model2)</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = voteA ~ log(expendA) + (log(expendB) - log(expendA)) + 
-##     prtystrA, data = vote1)
+## lm(formula = voteA ~ x1 + x2 + prtystrA, data = vote1)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
 ## -20.3968  -5.4174  -0.8679   4.9551  26.0660 
 ## 
 ## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  45.07893    3.92631   11.48   &lt;2e-16 ***
-## log(expendA)  6.08332    0.38215   15.92   &lt;2e-16 ***
-## log(expendB) -6.61542    0.37882  -17.46   &lt;2e-16 ***
-## prtystrA      0.15196    0.06202    2.45   0.0153 *  
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 45.07893    3.92631  11.481   &lt;2e-16 ***
+## x1          -0.53210    0.53309  -0.998   0.3196    
+## x2          -6.61542    0.37882 -17.463   &lt;2e-16 ***
+## prtystrA     0.15196    0.06202   2.450   0.0153 *  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## Residual standard error: 7.712 on 169 degrees of freedom
 ## Multiple R-squared:  0.7926, Adjusted R-squared:  0.7889 
 ## F-statistic: 215.2 on 3 and 169 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>ii에서 주장한 귀무가설은 b1+b2 = 0 과 동일하다. b1+b2를 B1이라고 두고 이를 포함하는 회귀식을 만든 결과, p-value 값이 0.3이상으로 높은 수준이다. 따라서 귀무가설을 기각할 수 없기 때문에, b1 - -b2라는 귀무가설을 채택할 수 있다.</p>
 </div>
 <div id="c3" class="section level4">
 <h4>C3</h4>
 <ol style="list-style-type: lower-roman">
-<li><p>You are interested in estimating and obtaining a confidence interval for the percent???age change in price when a 150-square-foot bedroom is added to a house. In decimal form, this is u1 5 150b1 1 b2. Use the data in HPRICE1.RAW to estimate u1.</p></li>
-<li>Write b2 in terms of u1 and b1 and plug this into the log(price) equation.</li>
-<li><p>Use part (ii) to obtain a standard error for ??u1 and use this standard error to construct a 95% confidence interval.</p></li>
+<li>You are interested in estimating and obtaining a confidence interval for the percent???age change in price when a 150-square-foot bedroom is added to a house. In decimal form, this is u1 5 150b1 1 b2. Use the data in HPRICE1.RAW to estimate u1.</li>
 </ol>
+<pre class="r"><code>lm1 = lm(log(hprice1$price)~hprice1$sqrft+hprice1$bdrms)
+summary(lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log(hprice1$price) ~ hprice1$sqrft + hprice1$bdrms)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.75448 -0.12322 -0.01993  0.11938  0.62948 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   4.766e+00  9.704e-02  49.112  &lt; 2e-16 ***
+## hprice1$sqrft 3.794e-04  4.321e-05   8.781  1.5e-13 ***
+## hprice1$bdrms 2.888e-02  2.964e-02   0.974    0.333    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1971 on 85 degrees of freedom
+## Multiple R-squared:  0.5883, Adjusted R-squared:  0.5786 
+## F-statistic: 60.73 on 2 and 85 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>b1 = 0.000379 b2 = 0.0296 B1 = 150b1+b2이므로 B1 = 0.086 따라서 150평방미터의 침실이 추가된다면, 집가격은 8.6% 상승한다.</p>
+<ol start="2" style="list-style-type: lower-roman">
+<li>Write b2 in terms of B1 and b1 and plug this into the log(price) equation.</li>
+</ol>
+<p>b2 = B1-150b1</p>
+<p>log(price) = b0+b1(sqrft-150bdrms)+B1bdrms+u</p>
+<ol start="3" style="list-style-type: lower-roman">
+<li>Use part (ii) to obtain a standard error for ??B1 and use this standard error to construct a 95% confidence interval.</li>
+</ol>
+<pre class="r"><code>x1 = hprice1$sqrft-150*hprice1$bdrms
+x2 = hprice1$bdrms
+
+lm2 = lm(log(hprice1$price)~x1+x2)
+summary(lm2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log(hprice1$price) ~ x1 + x2)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.75448 -0.12322 -0.01993  0.11938  0.62948 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 4.766e+00  9.704e-02  49.112  &lt; 2e-16 ***
+## x1          3.794e-04  4.321e-05   8.781  1.5e-13 ***
+## x2          8.580e-02  2.677e-02   3.205   0.0019 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1971 on 85 degrees of freedom
+## Multiple R-squared:  0.5883, Adjusted R-squared:  0.5786 
+## F-statistic: 60.73 on 2 and 85 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>se(B1)은 0.0268정도다.</p>
+<pre class="r"><code>confint(lm2)</code></pre>
+<pre><code>##                    2.5 %       97.5 %
+## (Intercept) 4.5730767914 4.9589776356
+## x1          0.0002935289 0.0004653631
+## x2          0.0325803713 0.1390223615</code></pre>
+<p>신뢰구간은 (0.0326,0.139) 이다.</p>
 </div>
 <div id="c5" class="section level4">
 <h4>C5</h4>
+<pre class="r"><code>data(&quot;mlb1&quot;)
+attach(mlb1)</code></pre>
+<ol style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>Use the model estimated in equation (4.31) and drop the variable rbisyr. What happens to the statistical significance of hrunsyr? What about the size of the coefficient on hrunsyr?</p>
+<pre class="r"><code>lm1 = lm(log(salary)~years+gamesyr+bavg+hrunsyr+rbisyr)
+lm2 = lm(log(salary)~years+gamesyr+bavg+hrunsyr)
+
+print(summary(lm1))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log(salary) ~ years + gamesyr + bavg + hrunsyr + 
+##     rbisyr)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -3.02508 -0.45034 -0.04013  0.47014  2.68924 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1.119e+01  2.888e-01  38.752  &lt; 2e-16 ***
+## years       6.886e-02  1.211e-02   5.684 2.79e-08 ***
+## gamesyr     1.255e-02  2.647e-03   4.742 3.09e-06 ***
+## bavg        9.786e-04  1.104e-03   0.887    0.376    
+## hrunsyr     1.443e-02  1.606e-02   0.899    0.369    
+## rbisyr      1.077e-02  7.175e-03   1.500    0.134    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7266 on 347 degrees of freedom
+## Multiple R-squared:  0.6278, Adjusted R-squared:  0.6224 
+## F-statistic: 117.1 on 5 and 347 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>print(summary(lm2))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log(salary) ~ years + gamesyr + bavg + hrunsyr)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.0642 -0.4614 -0.0271  0.4654  2.7216 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 11.020913   0.265719  41.476  &lt; 2e-16 ***
+## years        0.067732   0.012113   5.592 4.55e-08 ***
+## gamesyr      0.015759   0.001564  10.079  &lt; 2e-16 ***
+## bavg         0.001419   0.001066   1.331    0.184    
+## hrunsyr      0.035943   0.007241   4.964 1.08e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7279 on 348 degrees of freedom
+## Multiple R-squared:  0.6254, Adjusted R-squared:  0.6211 
+## F-statistic: 145.2 on 4 and 348 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>rbisyr을 제외하고 회귀를 한 결과, hrunsyr의 p-value 값이 굉장히 낮아지고, 유의해졌다. 또한 회귀계수가 두배 이상 증가했다.</p>
+<ol start="2" style="list-style-type: lower-roman">
+<li>Add the variables runsyr (runs per year), fldperc (fielding percentage), and sbasesyr (stolen bases per year) to the model from part (i). Which of these factors are individually significant?</li>
+</ol>
+<pre class="r"><code>lm3 = lm(log(salary)~years+gamesyr+bavg+hrunsyr+fldperc+runsyr+sbasesyr)
+
+summary(lm3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log(salary) ~ years + gamesyr + bavg + hrunsyr + 
+##     fldperc + runsyr + sbasesyr)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.11554 -0.44557 -0.08808  0.48731  2.57872 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 10.4082678  2.0032546   5.196 3.50e-07 ***
+## years        0.0699848  0.0119756   5.844 1.18e-08 ***
+## gamesyr      0.0078995  0.0026775   2.950 0.003391 ** 
+## bavg         0.0005296  0.0011038   0.480 0.631656    
+## hrunsyr      0.0232106  0.0086392   2.687 0.007566 ** 
+## fldperc      0.0010351  0.0020046   0.516 0.605936    
+## runsyr       0.0173922  0.0050641   3.434 0.000666 ***
+## sbasesyr    -0.0064191  0.0051842  -1.238 0.216479    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7176 on 345 degrees of freedom
+## Multiple R-squared:  0.639,  Adjusted R-squared:  0.6317 
+## F-statistic: 87.25 on 7 and 345 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>새롭게 넣은 3개의 변수중에, runsyr만 충분히 큰 t 값을 갖고 유의미하다. 나머지 두 개는 귀무가설을 기각하기에 충분하지 않다.</p>
+<ol start="3" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>In the model from part (ii), test the joint significance of bavg, fldperc, and sbasesyr.</p>
+<pre class="r"><code>lm4 = lm(log(salary)~years+gamesyr+hrunsyr+runsyr)
+anova(lm4,lm3)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: log(salary) ~ years + gamesyr + hrunsyr + runsyr
+## Model 2: log(salary) ~ years + gamesyr + bavg + hrunsyr + fldperc + runsyr + 
+##     sbasesyr
+##   Res.Df    RSS Df Sum of Sq     F Pr(&gt;F)
+## 1    348 178.72                          
+## 2    345 177.66  3    1.0583 0.685 0.5617</code></pre>
+<pre class="r"><code>detach(mlb1)</code></pre>
+<p>t-test값을 통해 확인 할 수 있듯이, 세 변수는 개별적으로 유의미하지 않다. 또한 anova 함수를 이용한 결과에서 알 수 있듯이, p-value 값이 0.56으로 굉장히 높다.따라서 귀무가설을 기각하기 어렵고, 세 변수가 joint 되더라도 유의미한 영향을 미친다고 할 수 없다.</p>
 </div>
 <div id="c6" class="section level4">
 <h4>C6</h4>
+<ol style="list-style-type: lower-roman">
+<li>Consider the standard wage equation log(wage) = b0 + b1educ + b2exper + b3tenure + u.</li>
+</ol>
+<p>State the null hypothesis that another year of general workforce experience has the same effect on log(wage) as another year of tenure with the current employer.</p>
+<p>귀무가설은 b2 = b3이다.</p>
+<ol start="2" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>Test the null hypothesis in part (i) against a two-sided alternative, at the 5% signifi???cance level, by constructing a 95% confidence interval. What do you conclude?</p>
+<p>B1 = b2-b3로 두고 회귀식을 정리하면, 아래와 같다.<br />
+log(wage) = b0 + b1educ+B1exper+b3(exper+tenure)+u</p>
+<pre class="r"><code>attach(wage2)
+library(car)
+lmR = lm(log(wage)~educ+exper+I(exper+tenure))
+confint(lmR)</code></pre>
+<pre><code>##                          2.5 %     97.5 %
+## (Intercept)        5.279782328 5.71360900
+## educ               0.062082990 0.08764456
+## exper             -0.007355358 0.01126271
+## I(exper + tenure)  0.008297389 0.01845221</code></pre>
+<pre class="r"><code>detach()</code></pre>
+<p>B1의 95% 신뢰구간은 (-0.007355358,0.01126271)인데 신뢰구간에 0이 포함되므로 귀무가설을 기각할 수 없다. 따라서 b2와 b3는 유의수준 5%에서 같다고 할 수 있다.</p>
 </div>
 <div id="c7" class="section level4">
 <h4>C7</h4>
+<p>Refer to the example used in Section 4.4. You will use the data set TWOYEAR.RAW. (i)</p>
+<p>The variable phsrank is the person’s high school percentile. (A higher number is better. For example, 90 means you are ranked better than 90 percent of your graduating class.) Find the smallest, largest, and average phsrank in the sample.</p>
+<pre class="r"><code>data('twoyear')
+summary(twoyear$phsrank)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00   44.00   50.00   56.16   76.00   99.00</code></pre>
+<p>최소값은 0이고 최대값은 99이고 평균은 56.16이다.</p>
+<ol start="2" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>Add phsrank to equation (4.26) and report the OLS estimates in the usual form. Is phsrank statistically significant? How much is 10 percentage points of high school rank worth in terms of wage?</p>
+<pre class="r"><code>twoyear = na.omit(twoyear)
+head(twoyear)</code></pre>
+<pre><code>##   female phsrank BA AA black hispanic  id exper        jc     univ
+## 1      1      65  0  0     0        0  19   161 0.0000000 0.000000
+## 2      1      97  0  0     0        0  93   119 0.0000000 7.033333
+## 3      1      44  0  0     0        0  96    81 0.0000000 0.000000
+## 4      1      34  0  0     0        1 119    39 0.2666667 0.000000
+## 5      1      80  0  0     0        0 132   141 0.0000000 0.000000
+## 6      0      59  0  0     0        0 156   165 0.0000000 0.000000
+##      lwage     stotal smcity medcity submed lgcity sublg vlgcity subvlg ne
+## 1 1.925291 -0.4417497      0       0      0      0     1       0      0  1
+## 2 2.796494  0.0000000      1       0      0      0     0       0      0  0
+## 3 1.625600 -1.3570027      0       0      0      0     1       0      0  1
+## 4 2.223312 -0.1900551      1       0      0      0     0       0      0  0
+## 5 1.642083  0.0000000      0       0      0      0     0       0      0  0
+## 6 2.079442  1.3887565      1       0      0      0     0       0      0  0
+##   nc south   totcoll
+## 1  0     0 0.0000000
+## 2  1     0 7.0333333
+## 3  0     0 0.0000000
+## 4  0     0 0.2666667
+## 5  0     1 0.0000000
+## 6  0     1 0.0000000</code></pre>
+<pre class="r"><code>lm1 = lm(lwage~jc+totcoll+exper+phsrank, data = twoyear)
+summary(lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = lwage ~ jc + totcoll + exper + phsrank, data = twoyear)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.09049 -0.28135  0.00538  0.28543  1.79060 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.4587472  0.0236211  61.756   &lt;2e-16 ***
+## jc          -0.0093108  0.0069693  -1.336    0.182    
+## totcoll      0.0754756  0.0025588  29.496   &lt;2e-16 ***
+## exper        0.0049396  0.0001575  31.360   &lt;2e-16 ***
+## phsrank      0.0003032  0.0002389   1.269    0.204    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4301 on 6758 degrees of freedom
+## Multiple R-squared:  0.2226, Adjusted R-squared:  0.2222 
+## F-statistic: 483.8 on 4 and 6758 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>log(wage) = 1.46 - 0.0093jc + 0.0754totcoll + 0.00493exper + 0.0003032phsrank<br />
+n = 6763, R^2 = 0.223<br />
+phrank의 t 값(1.269)이 충분히 낮은 p-value을 가질 만큼 유의미하지 않다. 만약 phrank가 10 증가한다면(단위가 %이므로 10%), 종속변수는 0.003증가하는데, 종속변수가 log scale되어 있으므로 wage가 0.3% 증가한다고 할 수 있다.</p>
+<ol start="3" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>Does adding phsrank to (4.26) substantively change the conclusions on the returns to two- and four-year colleges? Explain.</p>
+<pre class="r"><code>lm2 = lm(lwage~jc+totcoll+exper, data = twoyear)
+
+summary(lm2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = lwage ~ jc + totcoll + exper, data = twoyear)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.10362 -0.28132  0.00551  0.28518  1.78167 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.4723256  0.0210602  69.910   &lt;2e-16 ***
+## jc          -0.0101795  0.0069359  -1.468    0.142    
+## totcoll      0.0768762  0.0023087  33.298   &lt;2e-16 ***
+## exper        0.0049442  0.0001575  31.397   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4301 on 6759 degrees of freedom
+## Multiple R-squared:  0.2224, Adjusted R-squared:  0.2221 
+## F-statistic: 644.5 on 3 and 6759 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>summary(lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = lwage ~ jc + totcoll + exper + phsrank, data = twoyear)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.09049 -0.28135  0.00538  0.28543  1.79060 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.4587472  0.0236211  61.756   &lt;2e-16 ***
+## jc          -0.0093108  0.0069693  -1.336    0.182    
+## totcoll      0.0754756  0.0025588  29.496   &lt;2e-16 ***
+## exper        0.0049396  0.0001575  31.360   &lt;2e-16 ***
+## phsrank      0.0003032  0.0002389   1.269    0.204    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4301 on 6758 degrees of freedom
+## Multiple R-squared:  0.2226, Adjusted R-squared:  0.2222 
+## F-statistic: 483.8 on 4 and 6758 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>phrank를 추가하므로써 다른 변수들의 회귀계수 값이나 p-value가 바꾼 부분도 있으나 검정 결과를 바꿀 만큼 큰 변화는 없다.</p>
+<ol start="4" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>The data set contains a variable called id. Explain why if you add id to equation (4.17) or (4.26) you expect it to be statistically insignificant. What is the two-sided p-value?</p>
+<pre class="r"><code>lm3 = lm(lwage~jc+totcoll+exper+id, data = twoyear)
+summary(lm3)$coefficients</code></pre>
+<pre><code>##                  Estimate   Std. Error   t value      Pr(&gt;|t|)
+## (Intercept)  1.467533e+00 2.283058e-02 64.279273  0.000000e+00
+## jc          -1.021802e-02 6.936629e-03 -1.473053  1.407833e-01
+## totcoll      7.688128e-02 2.308868e-03 33.298260 2.956450e-225
+## exper        4.945596e-03 1.575019e-04 31.400223 3.809016e-202
+## id           1.139082e-07 2.094424e-07  0.543864  5.865530e-01</code></pre>
+<p>id는 개인을 구별하기위해 랜덤하게 주어진 인식번호이므로 어떠한 변수와도 상관이 없다. p-value 값(0.586)도 상당히 높은 편이므로 유의미하지 않다는 것을 쉽게 확인할 수 있다.</p>
 </div>
 <div id="c8" class="section level4">
 <h4>C8</h4>
+<ol style="list-style-type: lower-roman">
+<li>How many single-person households are there in the data set?</li>
+</ol>
+<pre class="r"><code>data(k401ksubs)
+head(k401ksubs)</code></pre>
+<pre><code>##   e401k    inc marr male age fsize  nettfa p401k pira     incsq agesq
+## 1     0 13.170    0    0  40     1   4.575     0    1  173.4489  1600
+## 2     1 61.230    0    1  35     1 154.000     1    0 3749.1128  1225
+## 3     0 12.858    1    0  44     2   0.000     0    0  165.3282  1936
+## 4     0 98.880    1    1  44     2  21.800     0    0 9777.2539  1936
+## 5     0 22.614    0    0  53     1  18.450     0    0  511.3930  2809
+## 6     0 15.000    1    0  60     3   0.000     0    0  225.0000  3600</code></pre>
+<pre class="r"><code>single = k401ksubs[k401ksubs$fsize == 1,]
+dim(single)</code></pre>
+<pre><code>## [1] 2017   11</code></pre>
+<p>1인가구는 2017개 있다.</p>
+<ol start="2" style="list-style-type: lower-roman">
+<li>Use OLS to estimate the model nettfa = b0 + b1inc + b2age + u,</li>
+</ol>
+<p>and report the results using the usual format. Be sure to use only the single-person households in the sample. Interpret the slope coefficients. Are there any surprises in the slope estimates?</p>
+<pre class="r"><code>lm1 = lm(nettfa~inc+age, data = single)
+coef(lm1)</code></pre>
+<pre><code>## (Intercept)         inc         age 
+## -43.0398119   0.7993167   0.8426563</code></pre>
+<p>분석 결과에 따르면, 나이가 고정된 상태에서 income이 1달러 늘어나면, netfa는 0.8달러 증가한다.(단위가 동일하므로) 그리고 income이 고정된 상태에서 1살이 증가하면 netfa는 843달러 증가한다. 나이가 많고 수입이 많을수록 총자산이 늘어나는 것은 자명한 결과로 놀랍지 않다.</p>
+<ol start="3" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>Does the intercept from the regression in part (ii) have an interesting meaning? Explain.</p>
+<p>나이가 0이고 수입이 0인 사람의 총자산의 평균이다. 이런 경우는 샘플에 없기 때문에 흥미로운 의미가 별로 없다.</p>
+<ol start="4" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>Find the p-value for the test H0: b2 = 1 against H1: b2 &gt;  1. Do you reject H0 at the 1% significance level?</p>
+<p>B1 = b2-1로 두고 회귀를 하면 다음과 같다.</p>
+<pre class="r"><code>summary(lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = nettfa ~ inc + age, data = single)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -179.95  -14.16   -3.42    6.03 1113.94 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -43.03981    4.08039 -10.548   &lt;2e-16 ***
+## inc           0.79932    0.05973  13.382   &lt;2e-16 ***
+## age           0.84266    0.09202   9.158   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 44.68 on 2014 degrees of freedom
+## Multiple R-squared:  0.1193, Adjusted R-squared:  0.1185 
+## F-statistic: 136.5 on 2 and 2014 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>t 통계량은[( ^b2-1) - (b2-1)]/se(b2-1)로 정의된다. 귀무가설에서 b2-1 = 0으로 주장하고 있고, 분산의 성질에 의해 se(b2-1) = se(b2)임으로 t 값은</p>
+<pre class="r"><code>(0.84266-1)/0.09202</code></pre>
+<pre><code>## [1] -1.709846</code></pre>
+<p>-1.70정도가 되는데, n이 충분히 크므로 표준정규분포로 근사된다고 할 때, 유의수준 5%에서 기각역 -Z0.05 = -1.645 정도이고 -1.7은 기각역에 포함되기 때문에 귀무가설을 가각할 수 있고 b2 = 1이 아니다.</p>
+<ol start="22" style="list-style-type: lower-alpha">
+<li></li>
+</ol>
+<p>If you do a simple regression of nettfa on inc, is the estimated coefficient on inc much different from the estimate in part (ii)? Why or why not?</p>
+<pre class="r"><code>summary(lm(nettfa~inc, data = single))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = nettfa ~ inc, data = single)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -185.12  -12.85   -4.85    1.78 1112.66 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -10.5709     2.0607   -5.13 3.18e-07 ***
+## inc           0.8207     0.0609   13.48  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 45.59 on 2015 degrees of freedom
+## Multiple R-squared:  0.08267,    Adjusted R-squared:  0.08222 
+## F-statistic: 181.6 on 1 and 2015 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>회귀계수의 값이 다소 증가했다. 그러나 큰 변화는 없다. inc값이 변화하는 이유는 age가 변해서 inc가 변해서 nettfa를 설명하는 부분이 다중에서는 분리가 되었다가 단순에서는 합쳐지면서 변화한 것이다. 다만, 두 상관관계가 양수이기 때문에 단순에서 inc의 회귀계수가 증가했다. 다만 증가량이 매우 작기 때문에 상관관계가 아주 작은 양의 값임을 추론할 수 있다.</p>
+<pre class="r"><code>cor(single$inc, single$age)</code></pre>
+<pre><code>## [1] 0.03905864</code></pre>
 </div>
 <div id="c11" class="section level4">
 <h4>C11</h4>
