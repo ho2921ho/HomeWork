@@ -1,26 +1,27 @@
 ---
 title: "Econometric_HW2"
-output: html_document
+output:
+  html_document: default
+  word_document: default
 ---
 
 ```{r}
 library(wooldridge)
 data("vote1")
-library(car)
 ```
 
 #### C1
 
-(i) What is the interpretation of b1?
-<br>
+(i) 
+
 expendA°¡ 1%¸¸Å­  Áõ°¡ÇÏ¸é, voteA°¡ b1/100¸¸Å­ º¯È­ÇÑ´Ù. ´Ü º» ¹®Á¦¿¡¼­ voteAÀÇ ´ÜÀ§°¡ %ÀÌ±â ¶§¹®¿¡, b1/100 %Æ÷ÀÎÆ® ¸¸Å­ º¯È­Çß´Ù°í ÇÒ ¼ö ÀÖ´Ù. 
 
-(ii) In terms of the parameters, state the null hypothesis that a 1% increase in A¡¯s ex???penditures is offset by a 1% increase in B¡¯s expenditures.
+(ii) 
 
-±Í¹«°¡¼³Àº ¾Æ·¡¿Í °°´Ù. 
+±Í¹«°¡¼³Àº ´ÙÀ½°ú °°´Ù. 
 H0: b1 = -b2
 
-(iii) Estimate the given model using the data in VOTE1.RAW and report the results in usual form. Do A¡¯s expenditures affect the outcome? What about B¡¯s expendi???tures? Can you use these results to test the hypothesis in part (ii)?
+(iii) 
 
 ```{r}
 model = lm(voteA~log(expendA)+log(expendB)+prtystrA, data = vote1)
@@ -32,8 +33,7 @@ n = 173, R2 = 0.793
 
 °á°ú¸¦ º¸¸é, µÎ º¯¼öÀÇ t-test°á°ú ¸ğµÎ À¯ÀÇ¹ÌÇÏ°Ô ³ª¿Â´Ù. ¶ÇÇÑ µÎ º¯¼öÀÇ ºÎÈ£°¡ ¹İ´ëÀÏ »Ó À¯»çÇÑ °ªÀ» °®´Â´Ù. µû¶ó¼­ µÎ º¯¼ö ¸ğµÎ °á°ú¿¡ ¿µÇâÀ» ¹ÌÄ£´Ù°í ÇÒ ¼ö ÀÖ´Ù.  ¶ÇÇÑ µÎ º¯¼öÀÇ Àı´ë°ªÀÌ ºñ½ÁÇÏ±â ¶§¹®¿¡, ±Í¹«°¡¼³À» ±â°¢ÇÏÁö ¾ÊÀ» ¼ö ÀÖ°í ÀÇ½ÉÇØº¼ ¼ö ÀÖ´Ù. ÇÏÁö¸¸, ÀÌ °á°ú¸¦ ÅëÇØ¼­´Â °¢°¢ÀÇ º¯¼ö°¡ À¯ÀÇ¹ÌÇÏ´Ù´Â °Í¸¸ È®ÀÎÇÒ ¼ö ÀÖÀ» »ÓÀÌ´Ù. µû¶ó¼­ 2¹ø ¹®Á¦¿¡¼­ Á¦½ÃÇÑ °¡¼³À» Å×½ºÆ®ÇÏ±â À§ÇØ¼­´Â ´Ù¸¥ ÀÛ¾÷ÀÌ ÇÊ¿äÇÏ´Ù. 
 
-(iv) Estimate a model that directly gives the t statistic for testing the hypothesis in part (ii). What do you conclude? (Use a two-sided alternative.)
-
+(iv) 
 ```{r}
 x1 = log(vote1$expendA)
 x2 = log(vote1$expendB)-log(vote1$expendA)
@@ -44,8 +44,7 @@ ii¿¡¼­ ÁÖÀåÇÑ ±Í¹«°¡¼³Àº b1+b2 = 0 °ú µ¿ÀÏÇÏ´Ù. b1+b2¸¦ B1ÀÌ¶ó°í µÎ°í ÀÌ¸¦ Æ÷ÇÔÇ
 
 #### C3
 
-(i) You are interested in estimating and obtaining a confidence interval for the percent???age change in price when a 150-square-foot bedroom is added to a house. In decimal 
-form, this is u1 5 150b1 1 b2. Use the data in HPRICE1.RAW to estimate u1.
+(i)
 
 ```{r}
 lm1 = lm(log(hprice1$price)~hprice1$sqrft+hprice1$bdrms)
@@ -56,13 +55,12 @@ b2 = 0.0296
 B1 = 150b1+b2ÀÌ¹Ç·Î B1 = 0.086 µû¶ó¼­ 150Æò¹æ¹ÌÅÍÀÇ Ä§½ÇÀÌ Ãß°¡µÈ´Ù¸é, 
 Áı°¡°İÀº 8.6% »ó½ÂÇÑ´Ù. 
 
-(ii) Write b2 in terms of B1 and b1 and plug this into the log(price) equation.
+(ii) 
 
 b2 = B1-150b1
-
 log(price) = b0+b1(sqrft-150bdrms)+B1bdrms+u
 
-(iii) Use part (ii) to obtain a standard error for ??B1 and use this standard error to construct a 95% confidence interval.
+(iii) 
 
 ```{r}
 x1 = hprice1$sqrft-150*hprice1$bdrms
@@ -85,11 +83,7 @@ data("mlb1")
 attach(mlb1)
 ```
 
-(i)
- 
-Use the model estimated in equation (4.31) and drop the variable rbisyr. What 
-happens to the statistical significance of hrunsyr? What about the size of the 
-coefficient on hrunsyr?
+(i) 
 
 ```{r}
 lm1 = lm(log(salary)~years+gamesyr+bavg+hrunsyr+rbisyr)
@@ -102,10 +96,6 @@ print(summary(lm2))
 rbisyrÀ» Á¦¿ÜÇÏ°í È¸±Í¸¦ ÇÑ °á°ú, hrunsyrÀÇ p-value °ªÀÌ ±²ÀåÈ÷ ³·¾ÆÁö°í, À¯ÀÇÇØÁ³´Ù. ¶ÇÇÑ È¸±Í°è¼ö°¡ µÎ¹è ÀÌ»ó Áõ°¡Çß´Ù.
 
 (ii)  
-Add the variables runsyr (runs per year), fldperc (fielding percentage), and 
-sbasesyr (stolen bases per year) to the model from part (i). Which of these factors 
-are individually significant?
-
 ```{r}
 lm3 = lm(log(salary)~years+gamesyr+bavg+hrunsyr+fldperc+runsyr+sbasesyr)
 
@@ -115,8 +105,6 @@ summary(lm3)
 »õ·Ó°Ô ³ÖÀº 3°³ÀÇ º¯¼öÁß¿¡, runsyr¸¸ ÃæºĞÈ÷ Å« t °ªÀ» °®°í À¯ÀÇ¹ÌÇÏ´Ù. ³ª¸ÓÁö µÎ °³´Â ±Í¹«°¡¼³À» ±â°¢ÇÏ±â¿¡ ÃæºĞÇÏÁö ¾Ê´Ù.  
 
 (iii)
- 
-In the model from part (ii), test the joint significance of bavg, fldperc, and sbasesyr.
 
 ```{r}
 lm4 = lm(log(salary)~years+gamesyr+hrunsyr+runsyr)
@@ -127,26 +115,18 @@ detach(mlb1)
 t-test°ªÀ» ÅëÇØ È®ÀÎ ÇÒ ¼ö ÀÖµíÀÌ, ¼¼ º¯¼ö´Â °³º°ÀûÀ¸·Î À¯ÀÇ¹ÌÇÏÁö ¾Ê´Ù. ¶ÇÇÑ ¼¼º¯¼öÀÇ jointµÈ ¿µÇâÀº anova °á°ú¿¡¼­ ¾Ë ¼ö ÀÖµíÀÌ, p-value °ªÀÌ 0.56À¸·Î ±²ÀåÈ÷ ³ô´Ù.µû¶ó¼­ ±Í¹«°¡¼³À» ±â°¢ÇÏ±â ¾î·Æ°í, ¼¼ º¯¼öÀÇ joint°¡ À¯ÀÇ¹ÌÇÑ ¿µÇâÀ» ¹ÌÄ£´Ù°í ÇÒ ¼ö ¾ø´Ù. 
 
 #### C6
-(i) Consider the standard wage equation
-log(wage) = b0 + b1educ + b2exper + b3tenure + u.
- 
-State the null hypothesis that another year of general workforce experience has the 
-same effect on log(wage) as another year of tenure with the current employer.
-
+(i) 
 
 ±Í¹«°¡¼³Àº b2 = b3ÀÌ´Ù. 
 
 
 (ii)
- 
-Test the null hypothesis in part (i) against a two-sided alternative, at the 5% signifi???cance level, by constructing a 95% confidence interval. What do you conclude?
 
 B1 = b2-b3·Î µÎ°í È¸±Í½ÄÀ» Á¤¸®ÇÏ¸é, ¾Æ·¡¿Í °°´Ù.   
 log(wage) = b0 + b1educ+B1exper+b3(exper+tenure)+u 
 
 ```{r}
 attach(wage2)
-library(car)
 lmR = lm(log(wage)~educ+exper+I(exper+tenure))
 confint(lmR)
 ```
@@ -154,12 +134,7 @@ B1ÀÇ 95% ½Å·Ú±¸°£Àº (-0.007355358,0.01126271)ÀÎµ¥ ½Å·Ú±¸°£¿¡ 0ÀÌ Æ÷ÇÔµÇ¹Ç·Î ±Í¹«
 
 #### C7
 
-Refer to the example used in Section 4.4. You will use the data set TWOYEAR.RAW.
 (i)
- 
-The variable phsrank is the person¡¯s high school percentile. (A higher number 
-is better. For example, 90 means you are ranked better than 90 percent of your 
-graduating class.) Find the smallest, largest, and average phsrank in the sample.
 
 ```{r}
 data('twoyear')
@@ -167,12 +142,7 @@ summary(twoyear$phsrank)
 ```
 ÃÖ¼Ò°ªÀº 0ÀÌ°í ÃÖ´ë°ªÀº 99ÀÌ°í Æò±ÕÀº 56.16ÀÌ´Ù. 
 
-(ii)
- 
-Add phsrank to equation (4.26) and report the OLS estimates in the usual form. Is 
-phsrank statistically significant? How much is 10 percentage points of high school 
-rank worth in terms of wage?
-
+(ii) 
 ```{r}
 twoyear = na.omit(twoyear)
 lm1 = lm(lwage~jc+totcoll+exper+phsrank, data = twoyear)
@@ -184,14 +154,9 @@ phrankÀÇ t °ª(1.269)ÀÌ ÃæºĞÈ÷ ³·Àº p-valueÀ» °¡Áú ¸¸Å­  À¯ÀÇ¹ÌÇÏÁö ¾Ê´Ù. ¸¸¾à ph
 
 
 
-(iii)
- 
-Does adding phsrank to (4.26) substantively change the conclusions on the returns 
-to two- and four-year colleges? Explain.
-
+(iii) 
 ```{r}
 lm2 = lm(lwage~jc+totcoll+exper, data = twoyear)
-
 summary(lm2)
 summary(lm1)
 
@@ -200,12 +165,7 @@ summary(lm1)
 phrank¸¦ Ãß°¡ÇÏ¹Ç·Î½á ´Ù¸¥ º¯¼öµéÀÇ È¸±Í°è¼ö °ªÀÌ³ª p-value°¡ ¹Ù²Û ºÎºĞµµ ÀÖÀ¸³ª °ËÁ¤ °á°ú¸¦ ¹Ù²Ü ¸¸Å­ Å« º¯È­´Â ¾ø´Ù. 
 
 
-(iv)
- 
-The data set contains a variable called id. Explain why if you add id to equation 
-(4.17) or (4.26) you expect it to be statistically insignificant. What is the two-sided 
-p-value?
-
+(iv) 
 
 ```{r}
 lm3 = lm(lwage~jc+totcoll+exper+id, data = twoyear)
@@ -215,22 +175,16 @@ summary(lm3)$coefficients
 id´Â °³ÀÎÀ» ±¸º°ÇÏ±âÀ§ÇØ ·£´ıÇÏ°Ô ÁÖ¾îÁø ÀÎ½Ä¹øÈ£ÀÌ¹Ç·Î ¾î¶°ÇÑ º¯¼ö¿Íµµ »ó°üÀÌ ¾ø´Ù. p-value °ª(0.586)µµ »ó´çÈ÷ ³ôÀº ÆíÀÌ¹Ç·Î À¯ÀÇ¹ÌÇÏÁö ¾Ê´Ù´Â °ÍÀ» ½±°Ô È®ÀÎÇÒ ¼ö ÀÖ´Ù. 
 
 #### C8
-(i) How many single-person households are there in the data set?
+(i) 
 ```{r}
 data(k401ksubs)
-head(k401ksubs)
 single = k401ksubs[k401ksubs$fsize == 1,]
 dim(single)
 ```
 
 1ÀÎ°¡±¸´Â 2017°³ ÀÖ´Ù. 
 
-(ii) Use OLS to estimate the model
-nettfa = b0 + b1inc + b2age + u,
- 
-and report the results using the usual format. Be sure to use only the single-person 
-households in the sample. Interpret the slope coefficients. Are there any surprises 
-in the slope estimates?
+(ii) 
 
 ```{r}
 lm1 = lm(nettfa~inc+age, data = single)
@@ -238,18 +192,10 @@ coef(lm1)
 ```
 ºĞ¼® °á°ú¿¡ µû¸£¸é, ³ªÀÌ°¡ °íÁ¤µÈ »óÅÂ¿¡¼­ incomeÀÌ 1´Ş·¯ ´Ã¾î³ª¸é, netfa´Â 0.8´Ş·¯ Áõ°¡ÇÑ´Ù.(´ÜÀ§°¡ µ¿ÀÏÇÏ¹Ç·Î) ±×¸®°í incomeÀÌ °íÁ¤µÈ »óÅÂ¿¡¼­ 1»ìÀÌ Áõ°¡ÇÏ¸é netfa´Â 843´Ş·¯ Áõ°¡ÇÑ´Ù. ³ªÀÌ°¡ ¸¹°í ¼öÀÔÀÌ ¸¹À»¼ö·Ï ÃÑÀÚ»êÀÌ ´Ã¾î³ª´Â °ÍÀº ÀÚ¸íÇÑ °á°ú·Î ³î¶øÁö ¾Ê´Ù. 
 
-(iii)
- 
-Does the intercept from the regression in part (ii) have an interesting meaning? 
-Explain.
-
+(iii) 
 ³ªÀÌ°¡ 0ÀÌ°í ¼öÀÔÀÌ 0ÀÎ »ç¶÷ÀÇ ÃÑÀÚ»êÀÇ Æò±ÕÀÌ´Ù. ÀÌ·± °æ¿ì´Â »ùÇÃ¿¡ ¾ø±â ¶§¹®¿¡ Èï¹Ì·Î¿ï ¹Ù ¾ø´Ù. 
 
-(iv)
- 
-Find the p-value for the test H0: b2 = 1 against H1: b2 > ÉÍ 1. Do you reject H0 at the 
-1% significance level?
-
+(iv) 
 B1 = b2-1·Î µÎ°í È¸±Í¸¦ ÇÏ¸é ´ÙÀ½°ú °°´Ù. 
 ```{r}
 summary(lm1)
@@ -261,9 +207,7 @@ t Åë°è·®Àº[( ^b2-1) - (b2-1)]/se(b2-1)·Î Á¤ÀÇµÈ´Ù. ±Í¹«°¡¼³¿¡¼­ b2-1 = 0À¸·Î ÁÖÀ
 ```
 -1.70Á¤µµ°¡ µÇ´Âµ¥, nÀÌ ÃæºĞÈ÷ Å©¹Ç·Î Ç¥ÁØÁ¤±ÔºĞÆ÷·Î ±Ù»çµÈ´Ù°í ÇÒ ¶§, À¯ÀÇ¼öÁØ 5%¿¡¼­ ±â°¢¿ª -Z0.05 = -1.645 Á¤µµÀÌ°í -1.7Àº ±â°¢¿ª¿¡ Æ÷ÇÔµÇ±â ¶§¹®¿¡ ±Í¹«°¡¼³À» °¡°¢ÇÒ ¼ö ÀÖ°í b2 = 1ÀÌ ¾Æ´Ï´Ù. 
 
-(v)
- 
-If you do a simple regression of nettfa on inc, is the estimated coefficient on inc much different from the estimate in part (ii)? Why or why not?
+(v) 
 
 ```{r}
 summary(lm(nettfa~inc, data = single))
@@ -276,5 +220,72 @@ cor(single$inc, single$age)
 
 #### C11
 
+(i) 
+```{r}
+data(htv)
+lm1 = lm(educ~motheduc+fatheduc+abil+I(abil*abil), data = htv)
+summary(lm1)
+```
+
+educ = 8.24 + 0.19motheduc + 0.108fatheduc + 0.4abil + 0.5abil^2  
+n = 1230 R2 = 0.4444  
+H0: b4 = 0
+H1: b4 != 0
+```{r}
+lmH0 = lm(educ~motheduc+fatheduc+abil, data = htv)
+lmH1 = lm(educ~motheduc+fatheduc+abil+I(abil*abil), data = htv)
+anova(lmH0,lmH1)
+```
+f Åë°è·®°ªÀÌ ÃæºĞÈ÷ Å©¹Ç·Î À¯ÀÇÈ®·üÀÌ ±²ÀåÈ÷ ÀÛÀº °ªÀ» °®´Â´Ù. µû¶ó¼­ ±Í¹«°¡¼³À» ±â°¢ÇÒ ¸¸ÇÑ À¯ÀÇ¹ÌÇÑ Áõ°Å¸¦ È®ÀÎÇß´Ù°í ÇÒ ¼ö ÀÖ°í abilÀÌ edu¿¡ ÁÖ´Â ¿µÇâÀ» ¼±ÇüÀÌ ¾Æ´Ï¶ó quadraticÀ¸·Î ÁÖÀåÇÒ ¼ö ÀÖ´Ù. 
+
+(ii) 
+
+```{r}
+lm1 = lm(educ~motheduc+fatheduc+abil+I(abil*abil), data = htv)
+```
+H0: b1=b2¸¦ °ËÁ¤ÇÏ´Â °ÍÀº B1 = 0, (B1 = b1-b2)ÀÇ À¯ÀÇ¼º °ËÁ¤°ú µ¿ÀÏÇÏ´Ù. B1=b1-b2À¸·Î µÎ°í,iÀÇ È¸±Í½ÄÀ» ÀÌ¿¡ ¸Â°Ô Á¤¸®ÇÏ¸é ´ÙÀ½°ú °°´Ù. 
+
+```{r}
+lm2 = lm(educ~motheduc+I(motheduc+fatheduc)+abil+I(abil*abil), data = htv)
+summary(lm2)
+```
+
+B1ÀÇ p-value°¡ 0.0531·Î ÀÏ¹İÀûÀÎ À¯ÀÇ¼öÁØ 5%º¸´Ù ³ô´Ù. µû¶ó¼­ ±Í¹«°¡¼³À» ±â°¢ÇÒ ¼ö ÀÖ´Â ÃæºĞÇÑ Áõ°Å°¡ ÀÖ´Ù°í º¸±â ¾î·Æ°í, À¯ÀÇ¼öÁØ 5%ÀÌ³»¿¡¼­ b1,b2ÀÌ µ¿ÀÏÇÏ´Ù°í ÇÒ ¼ö ÀÖ´Ù. ´Ù¸¸ À¯ÀÇÈ®·üÀÌ 0.0531·Î 0.05¿Í Å« Â÷ÀÌ°¡ ¾ø±â ¶§¹®¿¡ Ç¥º»ÀÇ ¼ö¸¦ ´Ã·Á¼­ À¯ÀÇÈ®·üÀ» ³·Ãá´Ù¸é ±Í¹«°¡¼³À» ±â°¢ÇÏ°í b1°ú b2°¡ ´Ù¸£´Ù°í ÁÖÀåÇÒ ¼öµµ ÀÖÀ» °ÍÀÌ´Ù. 
+
+
+(iii)
+ 
+
+```{r}
+lmU = lm(educ~motheduc+fatheduc+abil+I(abil*abil)+tuit17+tuit18, data = htv)
+lmR = lm(educ~motheduc+fatheduc+abil+I(abil*abil), data = htv)
+
+anova(lmR,lmU)
+```
+
+H0: b5=b6=0
+
+f °ËÁ¤°á°ú, p-value °ªÀÌ »ó´çÈ÷ ³ô´Ù. µû¶ó¼­ ±Í¹«°¡¼³À» ±â°¢ÇÒ ¼ö ¾ø°í b5,b6Àº jointly insignificantÇÏ´Ù. 
+
+(iv)
+ 
+```{r}
+cor(htv$tuit17,htv$tuit18)
+```
+µÎ µ¶¸³º¯¼ö°¡ ³ôÀº »ó°ü°ü°è¸¦ °®´Â´Ù.(0.9808), Æò±Õ ¼ö¾÷·á¸¦ º¯¼ö·Î »ç¿ëÇÏ´Â ÀÌÀ¯´Â ¼­·Î »ó°ü°ü°è°¡ ³ôÀº º¯¼ö¸¦ ¸ğµ¨¿¡ ÇÔ²² »ç¿ëÇÒ °æ¿ì È¸±Í°è¼ö ÃßÁ¤·®ÀÇ ºĞ»êÀÌ Ä¿Áö±â ¶§¹®ÀÌ´Ù. ºĞ»êÀÌ ÀÛÀ» ¼ö·Ï ÁÁÀº ÃßÁ¤·®ÀÌ¹Ç·Î µÎ º¯¼ö¸¦ °¢°¢ ³Ö´Â °Í º¸´Ù Æò±ÕÀ» ÇØ¼­ ÇÏ³ªÀÇ º¯¼ö·Î »ç¿ëÇÏ´Â °ÍÀÌ ¼±È£µÈ´Ù. Æò±ÕÀ» »ç¿ëÇÏ¸é µÎ º¯¼ö¸¦ ÇÏ³ªÀÇ º¯¼ö·Î ÁÙÀÏ ¼ö ÀÖ´Ù. 
+
+```{r}
+
+tuit = (htv$tuit17+htv$tuit18)/2
+lmavg = lm(educ~motheduc+fatheduc+abil+I(abil*abil)+tuit, data = htv)
+
+summary(lmavg)
+
+```
+
+
+(v)
+
+¼ö¾÷·á¸¦ ÀÎ°ú°ü°è·Î »ı°¢ÇÒ ¼ö ¾ø´Ù. ¼ö¾÷·áÀÇ È¸±Í°è¼ö°¡ ÀÛÀ» »Ó´õ·¯ À¯ÀÇ¹ÌÇÏÁö ¾Ê´Ù. ¼ö¾÷·á¿Í ³ôÀº ¼ºÀûÀÌ À¯ÀÇ¹ÌÇÑ °ü°è°¡ ÀÖ´Ù°í ÁÖÀåÇÒ ¼ö ÀÖ´Â ±Ù°Å°¡ µ¥ÀÌÅÍ »ó¿¡ Á¸ÀçÇÏÁö ¾Ê´Â´Ù. ¶ÇÇÑ È¸±ÍºĞ¼®Àº µÎ º¯¼ö »çÀÌÀÇ »ó°ü°ü°è¸¦ ¼³¸íÇÒ »ÓÀÌ¸ç »ó°ü°ü°è°¡ ²À ÀÎ°ú°ü°è°¡ µÇ´Â °ÍÀº ¾Æ´Ï´Ù.  ÀÏ¹İÀûÀ¸·Î ±³À°¿¡ ¸¹Àº ÁöÃâÀ» ÇÏ¸é ÁÁÀº ¼ºÀûÀ» ¹Ş´Â´Ù°í ±â´ëÇÑ´Ù. ÇÏÁö¸¸ µ¥ÀÌÅÍ »ó¿¡¼­´Â ÁÁÀº ¼ºÀûÀ» À§ÇØ¼­´Â ºÎ¸ğ´ÔÀÇ ¼ºÀûÀÌ ´õ Áß¿äÇÏ´Ù. Áï »ç±³À°À» ¸¹ÀÌ ½ÃÄÑµµ À¯ÀüÀûÀÎ ¿µÇâÀÌ ´õ Áß¿äÇÏ´Ù´Â ¶æÀ¸·Î ÇØ¼®ÇÒ ¼ö ÀÖ´Ù.  
 
 

@@ -194,18 +194,19 @@ $(document).ready(function () {
 
 
 <pre class="r"><code>library(wooldridge)
-data(&quot;vote1&quot;)
-library(car)</code></pre>
-<pre><code>## Loading required package: carData</code></pre>
+data(&quot;vote1&quot;)</code></pre>
 <div id="c1" class="section level4">
 <h4>C1</h4>
 <ol style="list-style-type: lower-roman">
-<li><p>What is the interpretation of b1? <br> expendA가 1%만큼 증가하면, voteA가 b1/100만큼 변화한다. 단 본 문제에서 voteA의 단위가 %이기 때문에, b1/100 %포인트 만큼 변화했다고 할 수 있다.</p></li>
-<li><p>In terms of the parameters, state the null hypothesis that a 1% increase in A’s ex???penditures is offset by a 1% increase in B’s expenditures.</p></li>
+<li></li>
 </ol>
-<p>귀무가설은 아래와 같다. H0: b1 = -b2</p>
+<p>expendA가 1%만큼 증가하면, voteA가 b1/100만큼 변화한다. 단 본 문제에서 voteA의 단위가 %이기 때문에, b1/100 %포인트 만큼 변화했다고 할 수 있다.</p>
+<ol start="2" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<p>귀무가설은 다음과 같다. H0: b1 = -b2</p>
 <ol start="3" style="list-style-type: lower-roman">
-<li>Estimate the given model using the data in VOTE1.RAW and report the results in usual form. Do A’s expenditures affect the outcome? What about B’s expendi???tures? Can you use these results to test the hypothesis in part (ii)?</li>
+<li></li>
 </ol>
 <pre class="r"><code>model = lm(voteA~log(expendA)+log(expendB)+prtystrA, data = vote1)
 summary(model)</code></pre>
@@ -233,7 +234,7 @@ summary(model)</code></pre>
 <p>voteA = 45.08+6.083log(expendA)-6.615log(expendB)+0.152 prtystrA n = 173, R2 = 0.793</p>
 <p>결과를 보면, 두 변수의 t-test결과 모두 유의미하게 나온다. 또한 두 변수의 부호가 반대일 뿐 유사한 값을 갖는다. 따라서 두 변수 모두 결과에 영향을 미친다고 할 수 있다. 또한 두 변수의 절대값이 비슷하기 때문에, 귀무가설을 기각하지 않을 수 있고 의심해볼 수 있다. 하지만, 이 결과를 통해서는 각각의 변수가 유의미하다는 것만 확인할 수 있을 뿐이다. 따라서 2번 문제에서 제시한 가설을 테스트하기 위해서는 다른 작업이 필요하다.</p>
 <ol start="4" style="list-style-type: lower-roman">
-<li>Estimate a model that directly gives the t statistic for testing the hypothesis in part (ii). What do you conclude? (Use a two-sided alternative.)</li>
+<li></li>
 </ol>
 <pre class="r"><code>x1 = log(vote1$expendA)
 x2 = log(vote1$expendB)-log(vote1$expendA)
@@ -259,12 +260,12 @@ summary(model2)</code></pre>
 ## Residual standard error: 7.712 on 169 degrees of freedom
 ## Multiple R-squared:  0.7926, Adjusted R-squared:  0.7889 
 ## F-statistic: 215.2 on 3 and 169 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>ii에서 주장한 귀무가설은 b1+b2 = 0 과 동일하다. b1+b2를 B1이라고 두고 이를 포함하는 회귀식을 만든 결과, p-value 값이 0.3이상으로 높은 수준이다. 따라서 귀무가설을 기각할 수 없기 때문에, b1 - -b2라는 귀무가설을 채택할 수 있다.</p>
+<p>ii에서 주장한 귀무가설은 b1+b2 = 0 과 동일하다. b1+b2를 B1이라고 두고 이를 포함하는 회귀식을 만든 결과, p-value 값이 0.3이상으로 높은 수준이다. 따라서 귀무가설을 기각할 수 없기 때문에, b1 = -b2라고 주장할 수 있다.</p>
 </div>
 <div id="c3" class="section level4">
 <h4>C3</h4>
 <ol style="list-style-type: lower-roman">
-<li>You are interested in estimating and obtaining a confidence interval for the percent???age change in price when a 150-square-foot bedroom is added to a house. In decimal form, this is u1 5 150b1 1 b2. Use the data in HPRICE1.RAW to estimate u1.</li>
+<li></li>
 </ol>
 <pre class="r"><code>lm1 = lm(log(hprice1$price)~hprice1$sqrft+hprice1$bdrms)
 summary(lm1)</code></pre>
@@ -289,12 +290,11 @@ summary(lm1)</code></pre>
 ## F-statistic: 60.73 on 2 and 85 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>b1 = 0.000379 b2 = 0.0296 B1 = 150b1+b2이므로 B1 = 0.086 따라서 150평방미터의 침실이 추가된다면, 집가격은 8.6% 상승한다.</p>
 <ol start="2" style="list-style-type: lower-roman">
-<li>Write b2 in terms of B1 and b1 and plug this into the log(price) equation.</li>
+<li></li>
 </ol>
-<p>b2 = B1-150b1</p>
-<p>log(price) = b0+b1(sqrft-150bdrms)+B1bdrms+u</p>
+<p>b2 = B1-150b1 log(price) = b0+b1(sqrft-150bdrms)+B1bdrms+u</p>
 <ol start="3" style="list-style-type: lower-roman">
-<li>Use part (ii) to obtain a standard error for ??B1 and use this standard error to construct a 95% confidence interval.</li>
+<li></li>
 </ol>
 <pre class="r"><code>x1 = hprice1$sqrft-150*hprice1$bdrms
 x2 = hprice1$bdrms
@@ -335,7 +335,6 @@ attach(mlb1)</code></pre>
 <ol style="list-style-type: lower-roman">
 <li></li>
 </ol>
-<p>Use the model estimated in equation (4.31) and drop the variable rbisyr. What happens to the statistical significance of hrunsyr? What about the size of the coefficient on hrunsyr?</p>
 <pre class="r"><code>lm1 = lm(log(salary)~years+gamesyr+bavg+hrunsyr+rbisyr)
 lm2 = lm(log(salary)~years+gamesyr+bavg+hrunsyr)
 
@@ -387,7 +386,7 @@ print(summary(lm1))</code></pre>
 ## F-statistic: 145.2 on 4 and 348 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>rbisyr을 제외하고 회귀를 한 결과, hrunsyr의 p-value 값이 굉장히 낮아지고, 유의해졌다. 또한 회귀계수가 두배 이상 증가했다.</p>
 <ol start="2" style="list-style-type: lower-roman">
-<li>Add the variables runsyr (runs per year), fldperc (fielding percentage), and sbasesyr (stolen bases per year) to the model from part (i). Which of these factors are individually significant?</li>
+<li></li>
 </ol>
 <pre class="r"><code>lm3 = lm(log(salary)~years+gamesyr+bavg+hrunsyr+fldperc+runsyr+sbasesyr)
 
@@ -421,7 +420,6 @@ summary(lm3)</code></pre>
 <ol start="3" style="list-style-type: lower-roman">
 <li></li>
 </ol>
-<p>In the model from part (ii), test the joint significance of bavg, fldperc, and sbasesyr.</p>
 <pre class="r"><code>lm4 = lm(log(salary)~years+gamesyr+hrunsyr+runsyr)
 anova(lm4,lm3)</code></pre>
 <pre><code>## Analysis of Variance Table
@@ -433,23 +431,20 @@ anova(lm4,lm3)</code></pre>
 ## 1    348 178.72                          
 ## 2    345 177.66  3    1.0583 0.685 0.5617</code></pre>
 <pre class="r"><code>detach(mlb1)</code></pre>
-<p>t-test값을 통해 확인 할 수 있듯이, 세 변수는 개별적으로 유의미하지 않다. 또한 anova 함수를 이용한 결과에서 알 수 있듯이, p-value 값이 0.56으로 굉장히 높다.따라서 귀무가설을 기각하기 어렵고, 세 변수가 joint 되더라도 유의미한 영향을 미친다고 할 수 없다.</p>
+<p>t-test값을 통해 확인 할 수 있듯이, 세 변수는 개별적으로 유의미하지 않다. 또한 세변수의 joint된 영향은 anova 결과에서 알 수 있듯이, p-value 값이 0.56으로 굉장히 높다.따라서 귀무가설을 기각하기 어렵고, 세 변수의 joint가 유의미한 영향을 미친다고 할 수 없다.</p>
 </div>
 <div id="c6" class="section level4">
 <h4>C6</h4>
 <ol style="list-style-type: lower-roman">
-<li>Consider the standard wage equation log(wage) = b0 + b1educ + b2exper + b3tenure + u.</li>
+<li></li>
 </ol>
-<p>State the null hypothesis that another year of general workforce experience has the same effect on log(wage) as another year of tenure with the current employer.</p>
 <p>귀무가설은 b2 = b3이다.</p>
 <ol start="2" style="list-style-type: lower-roman">
 <li></li>
 </ol>
-<p>Test the null hypothesis in part (i) against a two-sided alternative, at the 5% signifi???cance level, by constructing a 95% confidence interval. What do you conclude?</p>
 <p>B1 = b2-b3로 두고 회귀식을 정리하면, 아래와 같다.<br />
 log(wage) = b0 + b1educ+B1exper+b3(exper+tenure)+u</p>
 <pre class="r"><code>attach(wage2)
-library(car)
 lmR = lm(log(wage)~educ+exper+I(exper+tenure))
 confint(lmR)</code></pre>
 <pre><code>##                          2.5 %     97.5 %
@@ -457,13 +452,13 @@ confint(lmR)</code></pre>
 ## educ               0.062082990 0.08764456
 ## exper             -0.007355358 0.01126271
 ## I(exper + tenure)  0.008297389 0.01845221</code></pre>
-<pre class="r"><code>detach()</code></pre>
 <p>B1의 95% 신뢰구간은 (-0.007355358,0.01126271)인데 신뢰구간에 0이 포함되므로 귀무가설을 기각할 수 없다. 따라서 b2와 b3는 유의수준 5%에서 같다고 할 수 있다.</p>
 </div>
 <div id="c7" class="section level4">
 <h4>C7</h4>
-<p>Refer to the example used in Section 4.4. You will use the data set TWOYEAR.RAW. (i)</p>
-<p>The variable phsrank is the person’s high school percentile. (A higher number is better. For example, 90 means you are ranked better than 90 percent of your graduating class.) Find the smallest, largest, and average phsrank in the sample.</p>
+<ol style="list-style-type: lower-roman">
+<li></li>
+</ol>
 <pre class="r"><code>data('twoyear')
 summary(twoyear$phsrank)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -472,31 +467,8 @@ summary(twoyear$phsrank)</code></pre>
 <ol start="2" style="list-style-type: lower-roman">
 <li></li>
 </ol>
-<p>Add phsrank to equation (4.26) and report the OLS estimates in the usual form. Is phsrank statistically significant? How much is 10 percentage points of high school rank worth in terms of wage?</p>
 <pre class="r"><code>twoyear = na.omit(twoyear)
-head(twoyear)</code></pre>
-<pre><code>##   female phsrank BA AA black hispanic  id exper        jc     univ
-## 1      1      65  0  0     0        0  19   161 0.0000000 0.000000
-## 2      1      97  0  0     0        0  93   119 0.0000000 7.033333
-## 3      1      44  0  0     0        0  96    81 0.0000000 0.000000
-## 4      1      34  0  0     0        1 119    39 0.2666667 0.000000
-## 5      1      80  0  0     0        0 132   141 0.0000000 0.000000
-## 6      0      59  0  0     0        0 156   165 0.0000000 0.000000
-##      lwage     stotal smcity medcity submed lgcity sublg vlgcity subvlg ne
-## 1 1.925291 -0.4417497      0       0      0      0     1       0      0  1
-## 2 2.796494  0.0000000      1       0      0      0     0       0      0  0
-## 3 1.625600 -1.3570027      0       0      0      0     1       0      0  1
-## 4 2.223312 -0.1900551      1       0      0      0     0       0      0  0
-## 5 1.642083  0.0000000      0       0      0      0     0       0      0  0
-## 6 2.079442  1.3887565      1       0      0      0     0       0      0  0
-##   nc south   totcoll
-## 1  0     0 0.0000000
-## 2  1     0 7.0333333
-## 3  0     0 0.0000000
-## 4  0     0 0.2666667
-## 5  0     1 0.0000000
-## 6  0     1 0.0000000</code></pre>
-<pre class="r"><code>lm1 = lm(lwage~jc+totcoll+exper+phsrank, data = twoyear)
+lm1 = lm(lwage~jc+totcoll+exper+phsrank, data = twoyear)
 summary(lm1)</code></pre>
 <pre><code>## 
 ## Call:
@@ -525,9 +497,7 @@ phrank의 t 값(1.269)이 충분히 낮은 p-value을 가질 만큼 유의미하
 <ol start="3" style="list-style-type: lower-roman">
 <li></li>
 </ol>
-<p>Does adding phsrank to (4.26) substantively change the conclusions on the returns to two- and four-year colleges? Explain.</p>
 <pre class="r"><code>lm2 = lm(lwage~jc+totcoll+exper, data = twoyear)
-
 summary(lm2)</code></pre>
 <pre><code>## 
 ## Call:
@@ -575,7 +545,6 @@ summary(lm2)</code></pre>
 <ol start="4" style="list-style-type: lower-roman">
 <li></li>
 </ol>
-<p>The data set contains a variable called id. Explain why if you add id to equation (4.17) or (4.26) you expect it to be statistically insignificant. What is the two-sided p-value?</p>
 <pre class="r"><code>lm3 = lm(lwage~jc+totcoll+exper+id, data = twoyear)
 summary(lm3)$coefficients</code></pre>
 <pre><code>##                  Estimate   Std. Error   t value      Pr(&gt;|t|)
@@ -589,40 +558,25 @@ summary(lm3)$coefficients</code></pre>
 <div id="c8" class="section level4">
 <h4>C8</h4>
 <ol style="list-style-type: lower-roman">
-<li>How many single-person households are there in the data set?</li>
+<li></li>
 </ol>
 <pre class="r"><code>data(k401ksubs)
-head(k401ksubs)</code></pre>
-<pre><code>##   e401k    inc marr male age fsize  nettfa p401k pira     incsq agesq
-## 1     0 13.170    0    0  40     1   4.575     0    1  173.4489  1600
-## 2     1 61.230    0    1  35     1 154.000     1    0 3749.1128  1225
-## 3     0 12.858    1    0  44     2   0.000     0    0  165.3282  1936
-## 4     0 98.880    1    1  44     2  21.800     0    0 9777.2539  1936
-## 5     0 22.614    0    0  53     1  18.450     0    0  511.3930  2809
-## 6     0 15.000    1    0  60     3   0.000     0    0  225.0000  3600</code></pre>
-<pre class="r"><code>single = k401ksubs[k401ksubs$fsize == 1,]
+single = k401ksubs[k401ksubs$fsize == 1,]
 dim(single)</code></pre>
 <pre><code>## [1] 2017   11</code></pre>
 <p>1인가구는 2017개 있다.</p>
 <ol start="2" style="list-style-type: lower-roman">
-<li>Use OLS to estimate the model nettfa = b0 + b1inc + b2age + u,</li>
+<li></li>
 </ol>
-<p>and report the results using the usual format. Be sure to use only the single-person households in the sample. Interpret the slope coefficients. Are there any surprises in the slope estimates?</p>
 <pre class="r"><code>lm1 = lm(nettfa~inc+age, data = single)
 coef(lm1)</code></pre>
 <pre><code>## (Intercept)         inc         age 
 ## -43.0398119   0.7993167   0.8426563</code></pre>
 <p>분석 결과에 따르면, 나이가 고정된 상태에서 income이 1달러 늘어나면, netfa는 0.8달러 증가한다.(단위가 동일하므로) 그리고 income이 고정된 상태에서 1살이 증가하면 netfa는 843달러 증가한다. 나이가 많고 수입이 많을수록 총자산이 늘어나는 것은 자명한 결과로 놀랍지 않다.</p>
 <ol start="3" style="list-style-type: lower-roman">
-<li></li>
+<li><p>나이가 0이고 수입이 0인 사람의 총자산의 평균이다. 이런 경우는 샘플에 없기 때문에 흥미로울 바 없다.</p></li>
+<li><p>B1 = b2-1로 두고 회귀를 하면 다음과 같다.</p></li>
 </ol>
-<p>Does the intercept from the regression in part (ii) have an interesting meaning? Explain.</p>
-<p>나이가 0이고 수입이 0인 사람의 총자산의 평균이다. 이런 경우는 샘플에 없기 때문에 흥미로운 의미가 별로 없다.</p>
-<ol start="4" style="list-style-type: lower-roman">
-<li></li>
-</ol>
-<p>Find the p-value for the test H0: b2 = 1 against H1: b2 &gt;  1. Do you reject H0 at the 1% significance level?</p>
-<p>B1 = b2-1로 두고 회귀를 하면 다음과 같다.</p>
 <pre class="r"><code>summary(lm1)</code></pre>
 <pre><code>## 
 ## Call:
@@ -650,7 +604,6 @@ coef(lm1)</code></pre>
 <ol start="22" style="list-style-type: lower-alpha">
 <li></li>
 </ol>
-<p>If you do a simple regression of nettfa on inc, is the estimated coefficient on inc much different from the estimate in part (ii)? Why or why not?</p>
 <pre class="r"><code>summary(lm(nettfa~inc, data = single))</code></pre>
 <pre><code>## 
 ## Call:
@@ -670,12 +623,140 @@ coef(lm1)</code></pre>
 ## Residual standard error: 45.59 on 2015 degrees of freedom
 ## Multiple R-squared:  0.08267,    Adjusted R-squared:  0.08222 
 ## F-statistic: 181.6 on 1 and 2015 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>회귀계수의 값이 다소 증가했다. 그러나 큰 변화는 없다. inc값이 변화하는 이유는 age가 변해서 inc가 변해서 nettfa를 설명하는 부분이 다중에서는 분리가 되었다가 단순에서는 합쳐지면서 변화한 것이다. 다만, 두 상관관계가 양수이기 때문에 단순에서 inc의 회귀계수가 증가했다. 다만 증가량이 매우 작기 때문에 상관관계가 아주 작은 양의 값임을 추론할 수 있다.</p>
+<p>회귀계수의 값이 다소 증가했다. 그러나 큰 변화는 없다. inc값이 변화하는 이유는 age가 변해서 inc가 변해서 nettfa를 설명하는 부분이 다중에서는 분리가 되었다가 단순에서는 합쳐지면서 변화한 것이다. 다만, 두 상관관계가 양수이기 때문에 단순에서 inc의 회귀계수가 증가했다. 다만 증가량이 매우 작기 때문에 상관관계가 아주 작은 양의 값임을 추론할 수 있다. 실제로 값을 구해보면 0.04정도가 나온다.</p>
 <pre class="r"><code>cor(single$inc, single$age)</code></pre>
 <pre><code>## [1] 0.03905864</code></pre>
 </div>
 <div id="c11" class="section level4">
 <h4>C11</h4>
+<ol style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<pre class="r"><code>data(htv)
+lm1 = lm(educ~motheduc+fatheduc+abil+I(abil*abil), data = htv)
+summary(lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = educ ~ motheduc + fatheduc + abil + I(abil * abil), 
+##     data = htv)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.2506 -1.1274 -0.1355  1.0223  7.0482 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    8.240226   0.287410  28.671  &lt; 2e-16 ***
+## motheduc       0.190126   0.028096   6.767 2.03e-11 ***
+## fatheduc       0.108939   0.019601   5.558 3.35e-08 ***
+## abil           0.401462   0.030288  13.255  &lt; 2e-16 ***
+## I(abil * abil) 0.050599   0.008304   6.093 1.48e-09 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.758 on 1225 degrees of freedom
+## Multiple R-squared:  0.4444, Adjusted R-squared:  0.4425 
+## F-statistic: 244.9 on 4 and 1225 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>educ = 8.24 + 0.19motheduc + 0.108fatheduc + 0.4abil + 0.5abil^2<br />
+n = 1230 R2 = 0.4444<br />
+H0: b4 = 0 H1: b4 != 0</p>
+<pre class="r"><code>lmH0 = lm(educ~motheduc+fatheduc+abil, data = htv)
+lmH1 = lm(educ~motheduc+fatheduc+abil+I(abil*abil), data = htv)
+anova(lmH0,lmH1)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: educ ~ motheduc + fatheduc + abil
+## Model 2: educ ~ motheduc + fatheduc + abil + I(abil * abil)
+##   Res.Df    RSS Df Sum of Sq     F    Pr(&gt;F)    
+## 1   1226 3900.0                                 
+## 2   1225 3785.2  1    114.73 37.13 1.478e-09 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<p>f 통계량값이 충분히 크므로 유의확률이 굉장히 작은 값을 갖는다. 따라서 귀무가설을 기각할 만한 유의미한 증거를 확인했다고 할 수 있고 abil이 edu에 주는 영향을 선형이 아니라 quadratic으로 주장할 수 있다.</p>
+<ol start="2" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<pre class="r"><code>lm1 = lm(educ~motheduc+fatheduc+abil+I(abil*abil), data = htv)</code></pre>
+<p>H0: b1=b2를 검정하는 것은 B1 = 0, (B1 = b1-b2)의 유의성 검정과 동일하다. B1=b1-b2으로 두고,i의 회귀식을 이에 맞게 정리하면 다음과 같다.</p>
+<pre class="r"><code>lm2 = lm(educ~motheduc+I(motheduc+fatheduc)+abil+I(abil*abil), data = htv)
+summary(lm2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = educ ~ motheduc + I(motheduc + fatheduc) + abil + 
+##     I(abil * abil), data = htv)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.2506 -1.1274 -0.1355  1.0223  7.0482 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            8.240226   0.287410  28.671  &lt; 2e-16 ***
+## motheduc               0.081187   0.041943   1.936   0.0531 .  
+## I(motheduc + fatheduc) 0.108939   0.019601   5.558 3.35e-08 ***
+## abil                   0.401462   0.030288  13.255  &lt; 2e-16 ***
+## I(abil * abil)         0.050599   0.008304   6.093 1.48e-09 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.758 on 1225 degrees of freedom
+## Multiple R-squared:  0.4444, Adjusted R-squared:  0.4425 
+## F-statistic: 244.9 on 4 and 1225 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>B1의 p-value가 0.0531로 일반적인 유의수준 5%보다 높다. 따라서 귀무가설을 기각할 수 있는 충분한 증거가 있다고 보기 어렵고, 유의수준 5%이내에서 b1,b2이 동일하다고 할 수 있다. 다만 유의확률이 0.0531로 0.05와 큰 차이가 없기 때문에 표본의 수를 늘려서 유의확률을 낮춘다면 귀무가설을 기각하고 b1과 b2가 다르다고 주장할 수도 있을 것이다.</p>
+<ol start="3" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<pre class="r"><code>lmU = lm(educ~motheduc+fatheduc+abil+I(abil*abil)+tuit17+tuit18, data = htv)
+lmR = lm(educ~motheduc+fatheduc+abil+I(abil*abil), data = htv)
+
+anova(lmR,lmU)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: educ ~ motheduc + fatheduc + abil + I(abil * abil)
+## Model 2: educ ~ motheduc + fatheduc + abil + I(abil * abil) + tuit17 + 
+##     tuit18
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1   1225 3785.2                           
+## 2   1223 3780.1  2    5.1884 0.8393 0.4322</code></pre>
+<p>H0: b5=b6=0</p>
+<p>f 검정결과, p-value 값이 상당히 높다. 따라서 귀무가설을 기각할 수 없고 b5,b6은 jointly insignificant하다.</p>
+<ol start="4" style="list-style-type: lower-roman">
+<li></li>
+</ol>
+<pre class="r"><code>cor(htv$tuit17,htv$tuit18)</code></pre>
+<pre><code>## [1] 0.9808333</code></pre>
+<p>두 독립변수가 높은 상관관계를 갖는다.(0.9808), 평균 수업료를 변수로 사용하는 이유는 서로 상관관계가 높은 변수를 모델에 함께 사용할 경우 회귀계수 추정량의 분산이 커지기 때문이다. 분산이 작을 수록 좋은 추정량이므로 두 변수를 각각 넣는 것 보다 평균을 해서 하나의 변수로 사용하는 것이 선호된다. 평균을 사용하면 두 변수를 하나의 변수로 줄일 수 있다.</p>
+<pre class="r"><code>tuit = (htv$tuit17+htv$tuit18)/2
+lmavg = lm(educ~motheduc+fatheduc+abil+I(abil*abil)+tuit, data = htv)
+
+summary(lmavg)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = educ ~ motheduc + fatheduc + abil + I(abil * abil) + 
+##     tuit, data = htv)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.1469 -1.1591 -0.1132  1.0312  7.0709 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    8.081339   0.312614  25.851  &lt; 2e-16 ***
+## motheduc       0.192863   0.028168   6.847 1.19e-11 ***
+## fatheduc       0.108368   0.019601   5.529 3.94e-08 ***
+## abil           0.399081   0.030336  13.156  &lt; 2e-16 ***
+## I(abil * abil) 0.050599   0.008302   6.095 1.46e-09 ***
+## tuit           0.015963   0.012373   1.290    0.197    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.757 on 1224 degrees of freedom
+## Multiple R-squared:  0.4451, Adjusted R-squared:  0.4428 
+## F-statistic: 196.4 on 5 and 1224 DF,  p-value: &lt; 2.2e-16</code></pre>
+<ol start="22" style="list-style-type: lower-alpha">
+<li></li>
+</ol>
+<p>수업료를 인과관계로 생각할 수 없다. 수업료의 회귀계수가 작을 뿐더러 유의미하지 않다. 수업료와 높은 성적이 유의미한 관계가 있다고 주장할 수 있는 근거가 데이터 상에 존재하지 않는다. 또한 회귀분석은 두 변수 사이의 상관관계를 설명할 뿐이며 상관관계가 꼭 인과관계가 되는 것은 아니다. 일반적으로 교육에 많은 지출을 하면 좋은 성적을 받는다고 기대한다. 하지만 데이터 상에서는 좋은 성적을 위해서는 부모님의 성적이 더 중요하다. 즉 사교육을 많이 시켜도 유전적인 영향이 더 중요하다는 뜻으로 해석할 수 있다.</p>
 </div>
 
 
