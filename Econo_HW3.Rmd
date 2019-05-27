@@ -1,0 +1,48 @@
+---
+title: "Econometric_HW3"
+output: html_document
+---
+### C1
+ 
+(1)  
+Var(u|totwrk,educ,age,yngkid,male)  
+= Var(u|male) = a0+a1male   
+만일 여성이면 male = 0이고 var(u|male=0) = a0  
+만일 남성이면 male = 1이고 var(u|male=1) = a0+a1  
+
+(2)  
+
+```{r}
+library(wooldridge)
+data('sleep75')
+head(sleep75)
+```
+
+```{r}
+model = lm(sleep~totwrk+educ+age+agesq+yngkid+male, data = sleep75)
+```
+
+```{r}
+male = sleep75$male == 1
+```
+
+```{r}
+sd(model$fitted.values[male])
+```
+```{r}
+sd(model$fitted.values[!male])
+```
+여성의 분산이 더 높다. 
+
+(3) 분산 검정. 
+
+```{r}
+x = model$fitted.values[!male] 
+y = model$fitted.values[male]
+
+var.test(x, y, ratio=1, alternative="two.sided", conf.level=0.95)
+```
+
+등분산 검정 결과 F값이 1.03로 상당히 낮고, p-value가 0.77로 높다. 따라서 신뢰수준 95%에서 귀무가설을 기각할 충분한 증거가 없으며 두 집단의 분산은 유의미하게 다르지 않다. 
+
+
