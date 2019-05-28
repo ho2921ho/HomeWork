@@ -443,7 +443,80 @@ var.test(x, y, ratio=1, alternative=&quot;two.sided&quot;, conf.level=0.95)</cod
 ## sample estimates:
 ## ratio of variances 
 ##           1.031411</code></pre>
-<p>등분산 검정 결과 F값이 1.03로 상당히 낮고, p-value가 0.77로 높다. 따라서 신뢰수준 95%에서 귀무가설을 기각할 충분한 증거가 없으며 두 집단의 분산은 동일하다.</p>
+<p>등분산 검정 결과 F값이 1.03로 상당히 낮고, p-value가 0.77로 높다. 따라서 신뢰수준 95%에서 귀무가설을 기각할 충분한 증거가 없으며 두 집단의 분산은 유의미하게 다르지 않다.</p>
+</div>
+<div id="c2" class="section level3">
+<h3>C2</h3>
+<ol style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>data(&quot;hprice1&quot;)
+library(sandwich)
+OLS = lm(price~lotsize+sqrft+bdrms, data = hprice1)
+
+library(lmtest)</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>coeftest(OLS,vcov=vcovHC(OLS,type = &#39;HC0&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                Estimate  Std. Error t value  Pr(&gt;|t|)    
+## (Intercept) -21.7703081  36.2843444 -0.6000   0.55013    
+## lotsize       0.0020677   0.0012227  1.6912   0.09451 .  
+## sqrft         0.1227782   0.0173178  7.0897 3.883e-10 ***
+## bdrms        13.8525217   8.2836880  1.6723   0.09819 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS)</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                Estimate  Std. Error t value  Pr(&gt;|t|)    
+## (Intercept) -2.1770e+01  2.9475e+01 -0.7386  0.462208    
+## lotsize      2.0677e-03  6.4213e-04  3.2201  0.001823 ** 
+## sqrft        1.2278e-01  1.3237e-02  9.2751 1.658e-14 ***
+## bdrms        1.3853e+01  9.0101e+00  1.5374  0.127945    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>일반적인 모델과 비교했을 때, 가장 큰 차이가 나는 변수는 lotsize이다. 강건한 모델에서는 lotsize의 표준오차가 거의 2배이상 증가하였고, 이로 인해 t-value값이 줄어들어 강건한 모델에서는 lotsize를 유의미하다고 보기 어려워졌다.(sqrft는 두 모델에서 유의미하고 bdrms는 두 모델에서 모두 유의미하지 않다.)</p>
+<ol start="2" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>OLS = lm(log(price)~log(lotsize)+log(sqrft)+bdrms, data = hprice1)
+coeftest(OLS,vcov=vcovHC(OLS,type = &#39;HC0&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##               Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)  -1.297042   0.763351 -1.6991   0.09299 .  
+## log(lotsize)  0.167967   0.040520  4.1453 8.067e-05 ***
+## log(sqrft)    0.700232   0.101442  6.9028 9.014e-10 ***
+## bdrms         0.036958   0.029898  1.2362   0.21984    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS)</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##               Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)  -1.297042   0.651284 -1.9915   0.04967 *  
+## log(lotsize)  0.167967   0.038281  4.3877 3.307e-05 ***
+## log(sqrft)    0.700232   0.092865  7.5403 5.006e-11 ***
+## bdrms         0.036958   0.027531  1.3424   0.18308    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>여전히 견고한 모델의 표준오차가 더 높은 편이지만, 그 전과 달리 log를 한 모델에서는 lotsize변수가 강건한 모델에서도 유의미하다.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>독립변수에 대해 적절한 변환을 사용하면 이분산성을 완화할 수 있다.</li>
+</ol>
+</div>
+<div id="c3" class="section level3">
+<h3>C3</h3>
 </div>
 
 
