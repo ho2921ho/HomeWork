@@ -1,6 +1,8 @@
 ---
 title: "Econometric_HW3"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 ### C1
  
@@ -236,5 +238,78 @@ coeftest(FGLS)
 통계량을 보정한 결과, 해석을 유의미하게 바꿀 변화는 관측되지 않는다. 하지만 restaurn를 제외하고 모든 추정량의 표준오차가 늘어난 것을 확인할 수 있다. 특히 log(cigpric)은 두배 가까이 표준오차가 증가했다. 
 
 
+### C12
+
+(1)
+
+```{r}
+data("meap00_01")
+OLS = lm(math4~lunch+log(enroll)+log(exppp), data = meap00_01)
+coeftest(OLS)
+```
 
 
+```{r}
+coeftest(OLS, vcov = vcovHC(OLS,type = 'HC0'))
+coeftest(OLS, vcov = vcovHC(OLS,type = 'HC1'))
+coeftest(OLS, vcov = vcovHC(OLS,type = 'HC2'))
+coeftest(OLS, vcov = vcovHC(OLS,type = 'HC3'))
+coeftest(OLS, vcov = vcovHC(OLS,type = 'HC4'))
+```
+
+어떠한 경우라도 heteroskedasticity-robust한 모델의 표준오차가 OLS 모델보다 언제나 다소 크다. 
+
+(2)
+
+```{r}
+yhat = OLS$fitted
+u2 = OLS$residuals^2
+white = lm(u2~yhat+I(yhat^2))
+summary(white)
+```
+F 통계량이 132.7로 상당히 높고 유의확률이 0에 수렴한다. 따라서 이분산성에 대한 강한 증거가 존재한다고 볼 수 있다. 
+
+(3)
+
+```{r}
+math4hat = OLS$fitted
+uhat = OLS$residuals
+
+ghat = lm(log(uhat^2)~math4hat+I(math4hat^2))$fitted
+hhat =exp(ghat)
+
+WLS = lm(math4~lunch+log(enroll)+log(exppp),data = meap00_01,weights = 1/hhat)
+coeftest(WLS)
+```
+```{r}
+coeftest(OLS)
+```
+lunch 변수는 두 모델 모두 유의미하고 계수의 크기도 거의 유사하다. log(enroll)은 OLS,WLS모두 유의미하지만 WLS 2.7 정도 증가했다. 가장 큰 변화는 log(exppp)인데, OLS 추정에는 유의미하지 않지만, WLS 추정에서는 유의미해진다.  
+
+(4)
+
+```{r}
+coeftest(WLS, vcov = vcovHC(WLS,type = 'HC0'))
+```
+(3)에서 WLS추정에서 유의미한 결과를 강건한 표준오차를 기반한 통계량으로 다시 계산해볼 필요가 있다. 가장 특징적인 변화를 보였던 log(exppp)변수의 경우, 표준오차값이 다소 증가했지만 여전히 유의미하다. 다른 변수도 표준오차 값이 전보다 증가하거나 비슷하지만 여전히 유의미하다.  
+
+(5)
+WLS 추정이 OLS보다 정확하다. WLS 추정의 log(exppp)의 강건한 표준오차는 1.8로 OLS의 경우(2.09) 보다 작다. 추정량의 표준오차가 더 작을수록 effiecncy가 좋은 추정이라고 할 수 있으며, t값도 훨씬 줄어들기 때문에 보다 유의미해진다. 
+
+### CHAPTER 10
+
+### C7 - (1)
+
+```{r}
+data("consump")
+
+OLS = lm(consump$gc~consump$gy)
+summary(OLS)
+```
+gc = 0.008079 + 0.570781gy n = 35 R2 = 0.6787  
+회귀 분석 결과, 소득의 상승률이 1퍼센트 포인트 오르다면 소비 상승률이 0.571퍼센트 포인트 가량 오른다고 볼 수 있다.   
+gy변수의 t값이 8.5정도롤 높기 떄문에 추정량이 유의미하다.   
+
+### CHAPTER 12
+
+### C6 - (1)

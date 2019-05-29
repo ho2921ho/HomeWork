@@ -388,36 +388,7 @@ $(document).ready(function () {
 <li></li>
 </ol>
 <pre class="r"><code>library(wooldridge)
-data(&#39;sleep75&#39;)
-head(sleep75)</code></pre>
-<pre><code>##   age black case clerical construc educ earns74 gdhlth inlf leis1 leis2
-## 1  32     0    1        0        0   12       0      0    1  3529  3479
-## 2  31     0    2        0        0   14    9500      1    1  2140  2140
-## 3  44     0    3        0        0   17   42500      1    1  4595  4505
-## 4  30     0    4        0        0   12   42500      1    1  3211  3211
-## 5  64     0    5        0        0   14    2500      1    1  4052  4007
-## 6  41     0    6        0        0   12       0      1    1  4812  4797
-##   leis3 smsa  lhrwage   lothinc male marr prot rlxall selfe sleep slpnaps
-## 1  3479    0 1.955861 10.075380    1    1    1   3163     0  3113    3163
-## 2  2140    0 0.357674  0.000000    1    0    1   2920     1  2920    2920
-## 3  4227    1 3.021887  0.000000    1    1    0   3038     1  2670    2760
-## 4  3211    0 2.263844  0.000000    0    1    1   3083     1  3083    3083
-## 5  4007    0 1.011601  9.328213    1    1    1   3493     0  3448    3493
-## 6  4797    0 2.957511 10.657280    1    1    1   4078     0  4063    4078
-##   south spsepay spwrk75 totwrk union worknrm workscnd exper yngkid yrsmarr
-## 1     0       0       0   3438     0    3438        0    14      0      13
-## 2     1       0       0   5020     0    5020        0    11      0       0
-## 3     0   20000       1   2815     0    2815        0    21      0       0
-## 4     0    5000       1   3786     0    3786        0    12      0      12
-## 5     0    2400       1   2580     0    2580        0    44      0      33
-## 6     0       0       0   1205     0       0     1205    23      0      23
-##      hrwage agesq
-## 1  7.070004  1024
-## 2  1.429999   961
-## 3 20.529997  1936
-## 4  9.619998   900
-## 5  2.750000  4096
-## 6 19.249998  1681</code></pre>
+data(&#39;sleep75&#39;)</code></pre>
 <pre class="r"><code>model = lm(sleep~totwrk+educ+age+agesq+yngkid+male, data = sleep75)</code></pre>
 <pre class="r"><code>male = sleep75$male == 1</code></pre>
 <pre class="r"><code>sd(model$fitted.values[male])</code></pre>
@@ -517,6 +488,516 @@ coeftest(OLS,vcov=vcovHC(OLS,type = &#39;HC0&#39;))</code></pre>
 </div>
 <div id="c3" class="section level3">
 <h3>C3</h3>
+<pre class="r"><code>yhat = OLS$fitted
+u2 = OLS$residuals^2
+Ru2 = summary(lm(u2 ~ yhat + I(yhat^2)))$r.squared
+LM = nrow(hprice1)*Ru2
+p.value = 1-pchisq(LM, 2)
+print(LM)</code></pre>
+<pre><code>## [1] 3.447287</code></pre>
+<pre class="r"><code>p.value</code></pre>
+<pre><code>## [1] 0.1784149</code></pre>
+<p>LM통계량이 3.447287 정도로 나오며, p-value가 0.178로 homoskedasticity assumption을 기각하기 어렵다. 따라서 8.18식에 따른 모델의 경우, 오차항의 등분산성을 가정할 수 있다.</p>
+</div>
+<div id="c4" class="section level3">
+<h3>C4</h3>
+<ol style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>data(vote1)
+OLS = lm(voteA~prtystrA+democA+log(expendA)+log(expendB), data = vote1)</code></pre>
+<pre class="r"><code>u = OLS$residuals
+OLS2 = lm(u~prtystrA+democA+log(expendA)+log(expendB), data = vote1)
+summary(OLS2)$r.squared</code></pre>
+<pre><code>## [1] 5.211387e-32</code></pre>
+<p>OLS를 통해 나온 잔차는 독립변수들이 span하는 열공간에 직교하기 때문에 잔차를 독립변수가 span하는 열공간에 projection하면 그 자신이 되기 때문에 설명되는 부분이 없고 R2값도 0이다. 다만 컴퓨터의 rounding error 때문에 정확히 0은 아니다.</p>
+<ol start="2" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>bptest(voteA~prtystrA+democA+log(expendA)+log(expendB),~prtystrA+democA+log(expendA)+log(expendB),data=vote1)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  voteA ~ prtystrA + democA + log(expendA) + log(expendB)
+## BP = 9.0934, df = 4, p-value = 0.05881</code></pre>
+<p>test결과 유의확률이 0.058정도로 유의수준 5%이내에서 유의미하지 않다. 따라서 귀무가설을 기각할만한 충분한 근거고 등분산성을 가정할 수 있으나 유의확률이 유의수준에 거의 근접하기 때문에 유의수준을 어떻게 설정하는 지에 따라서 이분산성에 대한 유의미한 증거가 될 수 있다.</p>
+<ol start="3" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>yhat = OLS$fitted
+u2 = OLS$residuals^2
+white = lm(u2~yhat+I(yhat^2))
+summary(white)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = u2 ~ yhat + I(yhat^2))
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -107.65  -44.80  -29.88   23.81  539.52 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept) 171.85840   53.14214   3.234  0.00147 **
+## yhat         -4.26368    2.16653  -1.968  0.05070 . 
+## I(yhat^2)     0.03574    0.02124   1.682  0.09434 . 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 81.66 on 170 degrees of freedom
+## Multiple R-squared:  0.03173,    Adjusted R-squared:  0.02034 
+## F-statistic: 2.786 on 2 and 170 DF,  p-value: 0.0645</code></pre>
+<p>F통계량(2,170)은 2.786이고 p-value는 0.0645정도로 (2)보다 유의확률이 더 높아졌다. 따라서 (2)와 마찬가지로 유의수준 5%에서는 기각이 어렵다.</p>
+</div>
+<div id="c8" class="section level3">
+<h3>C8</h3>
+<ol style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>data(&#39;GPA1&#39;)</code></pre>
+<pre><code>## Warning in data(&quot;GPA1&quot;): data set &#39;GPA1&#39; not found</code></pre>
+<pre class="r"><code>OLS = lm(colGPA~hsGPA+ACT+skipped+PC, data = gpa1)
+u = OLS$residuals
+summary(OLS)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = colGPA ~ hsGPA + ACT + skipped + PC, data = gpa1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.84006 -0.20392 -0.03352  0.25346  0.74558 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.35651    0.32750   4.142 6.01e-05 ***
+## hsGPA        0.41295    0.09243   4.468 1.65e-05 ***
+## ACT          0.01334    0.01044   1.278  0.20353    
+## skipped     -0.07103    0.02625  -2.706  0.00768 ** 
+## PC           0.12444    0.05731   2.171  0.03165 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3251 on 136 degrees of freedom
+## Multiple R-squared:  0.2593, Adjusted R-squared:  0.2375 
+## F-statistic:  11.9 on 4 and 136 DF,  p-value: 2.553e-08</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>yhat = OLS$fitted
+u2 = OLS$residuals^2
+white = lm(u2~yhat+I(yhat^2))
+summary(white)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = u2 ~ yhat + I(yhat^2))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.13286 -0.07802 -0.04020  0.04954  0.60632 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -0.321838   2.005841  -0.160    0.873
+## yhat         0.129600   1.316763   0.098    0.922
+## I(yhat^2)    0.002946   0.215660   0.014    0.989
+## 
+## Residual standard error: 0.1237 on 138 degrees of freedom
+## Multiple R-squared:  0.04934,    Adjusted R-squared:  0.03557 
+## F-statistic: 3.581 on 2 and 138 DF,  p-value: 0.03045</code></pre>
+<p>F 통계량 값이 3.581 정도이고 유의확률은 0.03정도로 유의수준 5%에서 귀무가설을 기각할 수 있는 충분한 증거가 있다. 따라서 이분산성이 존재한다고 할 수 있다.</p>
+<ol start="3" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>hhat = white$fitted
+
+min(hhat)</code></pre>
+<pre><code>## [1] 0.02738136</code></pre>
+<p>최소값이 0.027이므로 모든 값이 양수이다.</p>
+<pre class="r"><code>WLS = lm(colGPA~hsGPA+ACT+skipped+PC, data = gpa1,,weights=(1/hhat))</code></pre>
+<pre class="r"><code>summary(WLS)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = colGPA ~ hsGPA + ACT + skipped + PC, data = gpa1, 
+##     weights = (1/hhat))
+## 
+## Weighted Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.6994 -0.6892 -0.1191  0.7963  2.5098 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.401564   0.298430   4.696 6.39e-06 ***
+## hsGPA        0.402506   0.083362   4.828 3.65e-06 ***
+## ACT          0.013162   0.009827   1.339 0.182698    
+## skipped     -0.076365   0.022173  -3.444 0.000762 ***
+## PC           0.126005   0.056339   2.237 0.026945 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.013 on 136 degrees of freedom
+## Multiple R-squared:  0.3062, Adjusted R-squared:  0.2858 
+## F-statistic: 15.01 on 4 and 136 DF,  p-value: 3.488e-10</code></pre>
+<p>PC 변수의 회귀계수 값이 조금 높아졌지만 큰 차이는 없다. 두 모델의 t 통계량이 거의 유사하다. R2의 경우, WLS에서 0.04정도 상승해지면, 전반적으로 큰 변화는 아니어서 두 모델이 유의미하게 다르다고 말하기 어렵다.</p>
+<ol start="4" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>coeftest(WLS,vcov=vcovHC(WLS,type = &#39;HC0&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)  1.401564   0.305039  4.5947 9.782e-06 ***
+## hsGPA        0.402506   0.084790  4.7471 5.162e-06 ***
+## ACT          0.013162   0.010228  1.2869 0.2003075    
+## skipped     -0.076365   0.020830 -3.6662 0.0003521 ***
+## PC           0.126005   0.057969  2.1737 0.0314608 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(WLS)</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##               Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)  1.4015638  0.2984304  4.6965 6.394e-06 ***
+## hsGPA        0.4025059  0.0833617  4.8284 3.651e-06 ***
+## ACT          0.0131620  0.0098273  1.3393 0.1826985    
+## skipped     -0.0763653  0.0221727 -3.4441 0.0007621 ***
+## PC           0.1260048  0.0563391  2.2365 0.0269446 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>robust standard errors를 사용했을 때와 그렇지 않았을 때의 결과가 크게 다르지 않다. robust standard errors를 사용했을 때, 전반적으로 표준오차가 커진 경향이 있지만 매우 작아서 두 모델의 결과를 유의미하게 바꾸지 않는다.</p>
+</div>
+<div id="c9" class="section level3">
+<h3>C9</h3>
+<ol style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>data(&quot;smoke&quot;)
+
+OLS = lm(cigs~log(income)+log(cigpric)+educ+age+agesq+restaurn, data = smoke)
+
+summary(OLS)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cigs ~ log(income) + log(cigpric) + educ + age + 
+##     agesq + restaurn, data = smoke)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -15.819  -9.381  -5.975   7.922  70.221 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -3.639826  24.078659  -0.151  0.87988    
+## log(income)   0.880268   0.727783   1.210  0.22682    
+## log(cigpric) -0.750862   5.773342  -0.130  0.89655    
+## educ         -0.501498   0.167077  -3.002  0.00277 ** 
+## age           0.770694   0.160122   4.813 1.78e-06 ***
+## agesq        -0.009023   0.001743  -5.176 2.86e-07 ***
+## restaurn     -2.825085   1.111794  -2.541  0.01124 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 13.4 on 800 degrees of freedom
+## Multiple R-squared:  0.05274,    Adjusted R-squared:  0.04563 
+## F-statistic: 7.423 on 6 and 800 DF,  p-value: 9.499e-08</code></pre>
+<p>OLS 추정결과, F통계량이 유의미하고 educ,age,agesq,restaurn 변수가 유의미하게 나온다. 하지만 R2 값 자체는 매우 낮은 편이다.</p>
+<pre class="r"><code>RegModel = cigs~log(income)+log(cigpric)+educ+age+agesq+restaurn
+OLS = lm(RegModel,data = smoke)
+smoke$e = OLS$residuals
+AUX = lm(update(OLS,I(log(e^2))~.), data = smoke)
+smoke$ghat = AUX$fitted
+smoke$hhat = exp(smoke$ghat)
+FGLS = lm(RegModel,data=smoke,weights = 1/hhat)
+summary(FGLS)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = RegModel, data = smoke, weights = 1/hhat)
+## 
+## Weighted Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.9036 -0.9532 -0.8099  0.8415  9.8556 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   5.6354627 17.8031394   0.317 0.751673    
+## log(income)   1.2952393  0.4370117   2.964 0.003128 ** 
+## log(cigpric) -2.9403117  4.4601446  -0.659 0.509931    
+## educ         -0.4634464  0.1201587  -3.857 0.000124 ***
+## age           0.4819480  0.0968082   4.978 7.86e-07 ***
+## agesq        -0.0056272  0.0009395  -5.990 3.17e-09 ***
+## restaurn     -3.4610640  0.7955050  -4.351 1.53e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.579 on 800 degrees of freedom
+## Multiple R-squared:  0.1134, Adjusted R-squared:  0.1068 
+## F-statistic: 17.06 on 6 and 800 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>head(FGLS$residuals) </code></pre>
+<pre><code>##         1         2         3         4         5         6 
+## -9.246794 -9.914233 -7.527828 -9.667242 -8.440092 -2.048961</code></pre>
+<pre class="r"><code>head(OLS$residuals)</code></pre>
+<pre><code>##          1          2          3          4          5          6 
+## -10.332992 -10.754790  -7.719894 -10.260642  -7.504153   2.439415</code></pre>
+<p>두 잔차간의 차이가 있긴 하지만, 그렇게 크진 않다.</p>
+<pre class="r"><code>uhat = FGLS$residuals
+yhat = FGLS$fitted</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>u2 = uhat/sqrt(hhat)</code></pre>
+<pre><code>## Warning in uhat/sqrt(hhat): 두 객체의 길이가 서로 배수관계에 있지 않습니다</code></pre>
+<pre class="r"><code>y2 = yhat/sqrt(hhat)</code></pre>
+<pre><code>## Warning in yhat/sqrt(hhat): 두 객체의 길이가 서로 배수관계에 있지 않습니다</code></pre>
+<pre class="r"><code>white = lm((u2)^2~y2+I(y2^2))
+summary(white)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = (u2)^2 ~ y2 + I(y2^2))
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+##  -7361  -1548   -968   -546  62142 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)  682.677    890.185   0.767    0.443  
+## y2           -35.737     63.975  -0.559    0.577  
+## I(y2^2)        2.942      1.140   2.581    0.010 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 5087 on 804 degrees of freedom
+## Multiple R-squared:  0.05745,    Adjusted R-squared:  0.05511 
+## F-statistic:  24.5 on 2 and 804 DF,  p-value: 4.675e-11</code></pre>
+<p>R2 값은 0.027로 낮은 수치지만, F-통계량이 상당히 높고 p-value가 0에 수렴한다. 특히 I(y2^2)변수가 유의미한 값이 나온다. 이를 통해 오차와 독립변수의 함수관계가 없다는 귀무가설을 기각할 만한 충분한 증거를 확인할 수 있으며, 오차와 독립변수 사이에 함수관계가 있다고 볼 수 있다. 또한 오차와 독립변수 사이에 함수 관계가 있다면 이를 이분산성으로 간즈 할 수 있다.</p>
+<ol start="4" style="list-style-type: decimal">
+<li></li>
+</ol>
+<p>3번 문제에서 확인할 수 있듯이 FGSL가 이분산성을 제거하지 않는다는 것을 알 수 있다.따라서 일반적인 검정에 사용되는 통계량을 그대로 사용할 수 없고 지금 출력된 그 결과도 유효하지 않다. (검정통계량들이 등분산을 가정하고 만들어졌기 때문에 이분산성이 있다면 이를 조정한 통계량을 사용해야한다.)</p>
+<ol start="5" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>coeftest(FGLS, vcov = vcovHC(FGLS,type = &#39;HC0&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)   5.6354627 37.1611619  0.1516  0.879502    
+## log(income)   1.2952393  0.5327686  2.4311  0.015270 *  
+## log(cigpric) -2.9403117  8.9314572 -0.3292  0.742084    
+## educ         -0.4634464  0.1484143 -3.1227  0.001857 ** 
+## age           0.4819480  0.1144917  4.2095 2.850e-05 ***
+## agesq        -0.0056272  0.0011719 -4.8018 1.877e-06 ***
+## restaurn     -3.4610640  0.7127922 -4.8556 1.443e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(FGLS)</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                 Estimate  Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)   5.63546270 17.80313936  0.3165  0.751673    
+## log(income)   1.29523934  0.43701172  2.9639  0.003128 ** 
+## log(cigpric) -2.94031167  4.46014462 -0.6592  0.509931    
+## educ         -0.46344636  0.12015869 -3.8570  0.000124 ***
+## age           0.48194797  0.09680824  4.9784 7.856e-07 ***
+## agesq        -0.00562721  0.00093948 -5.9897 3.175e-09 ***
+## restaurn     -3.46106399  0.79550504 -4.3508 1.532e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>통계량을 보정한 결과, 해석을 유의미하게 바꿀 변화는 관측되지 않는다. 하지만 restaurn를 제외하고 모든 추정량의 표준오차가 늘어난 것을 확인할 수 있다. 특히 log(cigpric)은 두배 가까이 표준오차가 증가했다.</p>
+</div>
+<div id="c12" class="section level3">
+<h3>C12</h3>
+<ol style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>data(&quot;meap00_01&quot;)
+OLS = lm(math4~lunch+log(enroll)+log(exppp), data = meap00_01)
+coeftest(OLS)</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 91.932404  19.961698   4.6054 4.424e-06 ***
+## lunch       -0.448743   0.014642 -30.6476 &lt; 2.2e-16 ***
+## log(enroll) -5.399152   0.940412  -5.7413 1.112e-08 ***
+## log(exppp)   3.524751   2.097846   1.6802   0.09311 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS, vcov = vcovHC(OLS,type = &#39;HC0&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 91.932404  23.059797   3.9867 6.986e-05 ***
+## lunch       -0.448743   0.016565 -27.0903 &lt; 2.2e-16 ***
+## log(enroll) -5.399152   1.129837  -4.7787 1.917e-06 ***
+## log(exppp)   3.524751   2.350953   1.4993     0.134    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS, vcov = vcovHC(OLS,type = &#39;HC1&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 91.932404  23.087103   3.9820 7.125e-05 ***
+## lunch       -0.448743   0.016584 -27.0583 &lt; 2.2e-16 ***
+## log(enroll) -5.399152   1.131175  -4.7730 1.971e-06 ***
+## log(exppp)   3.524751   2.353737   1.4975    0.1344    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS, vcov = vcovHC(OLS,type = &#39;HC2&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 91.932404  23.131338   3.9744 7.354e-05 ***
+## lunch       -0.448743   0.016601 -27.0318 &lt; 2.2e-16 ***
+## log(enroll) -5.399152   1.132304  -4.7683 2.018e-06 ***
+## log(exppp)   3.524751   2.359103   1.4941    0.1353    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS, vcov = vcovHC(OLS,type = &#39;HC3&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 91.932404  23.203501   3.9620 7.742e-05 ***
+## lunch       -0.448743   0.016637 -26.9732 &lt; 2.2e-16 ***
+## log(enroll) -5.399152   1.134779  -4.7579 2.123e-06 ***
+## log(exppp)   3.524751   2.367336   1.4889    0.1367    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS, vcov = vcovHC(OLS,type = &#39;HC4&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 91.932404  23.268244   3.9510 8.104e-05 ***
+## lunch       -0.448743   0.016646 -26.9588 &lt; 2.2e-16 ***
+## log(enroll) -5.399152   1.135214  -4.7561 2.142e-06 ***
+## log(exppp)   3.524751   2.376165   1.4834    0.1382    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>어떠한 경우라도 heteroskedasticity-robust한 모델의 표준오차가 OLS 모델보다 언제나 다소 크다.</p>
+<ol start="2" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>yhat = OLS$fitted
+u2 = OLS$residuals^2
+white = lm(u2~yhat+I(yhat^2))
+summary(white)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = u2 ~ yhat + I(yhat^2))
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -593.52 -163.92  -72.42   52.12 2735.87 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1664.12800  315.21436   5.279 1.46e-07 ***
+## yhat         -28.29903    9.21685  -3.070  0.00217 ** 
+## I(yhat^2)      0.11553    0.06591   1.753  0.07982 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 365.1 on 1689 degrees of freedom
+## Multiple R-squared:  0.1358, Adjusted R-squared:  0.1348 
+## F-statistic: 132.7 on 2 and 1689 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>F 통계량이 132.7로 상당히 높고 유의확률이 0에 수렴한다. 따라서 이분산성에 대한 강한 증거가 존재한다고 볼 수 있다.</p>
+<ol start="3" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>math4hat = OLS$fitted
+uhat = OLS$residuals
+
+ghat = lm(log(uhat^2)~math4hat+I(math4hat^2))$fitted
+hhat =exp(ghat)
+
+WLS = lm(math4~lunch+log(enroll)+log(exppp),data = meap00_01,weights = 1/hhat)
+coeftest(WLS)</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 50.478152  16.510316   3.0574 0.0022679 ** 
+## lunch       -0.448592   0.014613 -30.6971 &lt; 2.2e-16 ***
+## log(enroll) -2.647282   0.835936  -3.1668 0.0015686 ** 
+## log(exppp)   6.474200   1.685877   3.8403 0.0001274 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS)</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 91.932404  19.961698   4.6054 4.424e-06 ***
+## lunch       -0.448743   0.014642 -30.6476 &lt; 2.2e-16 ***
+## log(enroll) -5.399152   0.940412  -5.7413 1.112e-08 ***
+## log(exppp)   3.524751   2.097846   1.6802   0.09311 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>lunch 변수는 두 모델 모두 유의미하고 계수의 크기도 거의 유사하다. log(enroll)은 OLS,WLS모두 유의미하지만 WLS 2.7 정도 증가했다. 가장 큰 변화는 log(exppp)인데, OLS 추정에는 유의미하지 않지만, WLS 추정에서는 유의미해진다.</p>
+<ol start="4" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>coeftest(WLS, vcov = vcovHC(WLS,type = &#39;HC0&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept) 50.478152  18.902796   2.6704 0.0076487 ** 
+## lunch       -0.448592   0.014237 -31.5084 &lt; 2.2e-16 ***
+## log(enroll) -2.647282   1.053361  -2.5132 0.0120574 *  
+## log(exppp)   6.474200   1.810724   3.5755 0.0003594 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>(3)에서 WLS추정에서 유의미한 결과를 강건한 표준오차를 기반한 통계량으로 다시 계산해볼 필요가 있다. 가장 특징적인 변화를 보였던 log(exppp)변수의 경우, 표준오차값이 다소 증가했지만 여전히 유의미하다. 다른 변수도 표준오차 값이 전보다 증가하거나 비슷하지만 여전히 유의미하다.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>WLS 추정이 OLS보다 정확하다. WLS 추정의 log(exppp)의 강건한 표준오차는 1.8로 OLS의 경우(2.09) 보다 작다. 추정량의 표준오차가 더 작을수록 effiecncy가 좋은 추정이라고 할 수 있으며, t값도 훨씬 줄어들기 때문에 보다 유의미해진다.</li>
+</ol>
+</div>
+<div id="chapter-10" class="section level3">
+<h3>CHAPTER 10</h3>
+</div>
+<div id="c7---1" class="section level3">
+<h3>C7 - (1)</h3>
+<pre class="r"><code>data(&quot;consump&quot;)
+
+OLS = lm(consump$gc~consump$gy)
+summary(OLS)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = consump$gc ~ consump$gy)
+## 
+## Residuals:
+##        Min         1Q     Median         3Q        Max 
+## -0.0140496 -0.0035407 -0.0005813  0.0044080  0.0116890 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.008079   0.001899   4.254 0.000155 ***
+## consump$gy  0.570781   0.067354   8.474 6.75e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.007268 on 34 degrees of freedom
+##   (1 observation deleted due to missingness)
+## Multiple R-squared:  0.6787, Adjusted R-squared:  0.6692 
+## F-statistic: 71.81 on 1 and 34 DF,  p-value: 6.754e-10</code></pre>
+<p>gc = 0.008079 + 0.570781gy n = 35 R2 = 0.6787<br />
+회귀 분석 결과, 소득의 상승률이 1퍼센트 포인트 오르다면 소비 상승률이 0.571퍼센트 포인트 가량 오른다고 볼 수 있다.<br />
+gy변수의 t값이 8.5정도롤 높기 떄문에 추정량이 유의미하다.</p>
+</div>
+<div id="chapter-12" class="section level3">
+<h3>CHAPTER 12</h3>
+</div>
+<div id="c6---1" class="section level3">
+<h3>C6 - (1)</h3>
 </div>
 
 
