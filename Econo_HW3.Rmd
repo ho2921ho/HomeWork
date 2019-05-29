@@ -175,3 +175,66 @@ coeftest(WLS)
 
 robust standard errors를 사용했을 때와 그렇지 않았을 때의 결과가 크게 다르지 않다. robust standard errors를 사용했을 때, 전반적으로 표준오차가 커진 경향이 있지만 매우 작아서 두 모델의 결과를 유의미하게 바꾸지 않는다.
 
+### C9
+
+(1)
+```{r}
+data("smoke")
+
+OLS = lm(cigs~log(income)+log(cigpric)+educ+age+agesq+restaurn, data = smoke)
+
+summary(OLS)
+```
+OLS 추정결과, F통계량이 유의미하고 educ,age,agesq,restaurn 변수가 유의미하게 나온다. 하지만 R2 값 자체는 매우 낮은 편이다. 
+
+```{r}
+RegModel = cigs~log(income)+log(cigpric)+educ+age+agesq+restaurn
+OLS = lm(RegModel,data = smoke)
+smoke$e = OLS$residuals
+AUX = lm(update(OLS,I(log(e^2))~.), data = smoke)
+smoke$ghat = AUX$fitted
+smoke$hhat = exp(smoke$ghat)
+FGLS = lm(RegModel,data=smoke,weights = 1/hhat)
+summary(FGLS)
+```
+```{r}
+head(FGLS$residuals) 
+head(OLS$residuals)
+```
+두 잔차간의 차이가  있긴 하지만, 그렇게 크진 않다.  
+
+```{r}
+uhat = FGLS$residuals
+yhat = FGLS$fitted
+```
+
+(3)
+```{r}
+u2 = uhat/sqrt(hhat)
+y2 = yhat/sqrt(hhat)
+```
+
+```{r}
+white = lm((u2)^2~y2+I(y2^2))
+summary(white)
+```
+R2 값은 0.027로 낮은 수치지만, F-통계량이 상당히 높고 p-value가 0에 수렴한다. 특히 I(y2^2)변수가 유의미한 값이 나온다. 이를 통해 오차와 독립변수의 함수관계가 없다는 귀무가설을 기각할 만한 충분한 증거를 확인할  수 있으며, 오차와 독립변수 사이에 함수관계가 있다고 볼 수 있다. 또한 오차와 독립변수 사이에 함수 관계가 있다면 이를 이분산성으로 간즈 할 수 있다.  
+
+(4)
+
+3번 문제에서 확인할 수 있듯이 FGSL가 이분산성을 제거하지 않는다는 것을 알 수 있다.따라서 일반적인 검정에 사용되는 통계량을 그대로 사용할 수 없고 지금 출력된 그 결과도 유효하지 않다. (검정통계량들이 등분산을 가정하고 만들어졌기 때문에 이분산성이 있다면 이를 조정한 통계량을 사용해야한다.)
+
+(5)
+
+```{r}
+coeftest(FGLS, vcov = vcovHC(FGLS,type = 'HC0'))
+```
+
+```{r}
+coeftest(FGLS)
+```
+통계량을 보정한 결과, 해석을 유의미하게 바꿀 변화는 관측되지 않는다. 하지만 restaurn를 제외하고 모든 추정량의 표준오차가 늘어난 것을 확인할 수 있다. 특히 log(cigpric)은 두배 가까이 표준오차가 증가했다. 
+
+
+
+
