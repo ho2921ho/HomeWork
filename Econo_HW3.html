@@ -481,7 +481,7 @@ coeftest(OLS,vcov=vcovHC(OLS,type = &#39;HC0&#39;))</code></pre>
 ## bdrms         0.036958   0.027531  1.3424   0.18308    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>여전히 견고한 모델의 표준오차가 더 높은 편이지만, 그 전과 달리 log를 한 모델에서는 lotsize변수가 강건한 모델에서도 유의미하다.</p>
+<p>여전히 강건한 모델의 표준오차가 더 높은 편이지만, 그 전과 달리 log를 한 모델에서는 lotsize변수가 강건한 모델에서도 유의미하다.</p>
 <ol start="3" style="list-style-type: decimal">
 <li>독립변수에 대해 적절한 변환을 사용하면 이분산성을 완화할 수 있다.</li>
 </ol>
@@ -497,7 +497,7 @@ print(LM)</code></pre>
 <pre><code>## [1] 3.447287</code></pre>
 <pre class="r"><code>p.value</code></pre>
 <pre><code>## [1] 0.1784149</code></pre>
-<p>LM통계량이 3.447287 정도로 나오며, p-value가 0.178로 homoskedasticity assumption을 기각하기 어렵다. 따라서 8.18식에 따른 모델의 경우, 오차항의 등분산성을 가정할 수 있다.</p>
+<p>LM통계량이 3.447287 정도로 나오며, p-value가 0.178로 homoscedasticity assumption을 기각하기 어렵다. 따라서 8.18식에 따른 모델의 경우, 오차항의 등분산성을 가정할 수 있다.</p>
 </div>
 <div id="c4" class="section level3">
 <h3>C4</h3>
@@ -520,7 +520,7 @@ summary(OLS2)$r.squared</code></pre>
 ## 
 ## data:  voteA ~ prtystrA + democA + log(expendA) + log(expendB)
 ## BP = 9.0934, df = 4, p-value = 0.05881</code></pre>
-<p>test결과 유의확률이 0.058정도로 유의수준 5%이내에서 유의미하지 않다. 따라서 귀무가설을 기각할만한 충분한 근거고 등분산성을 가정할 수 있으나 유의확률이 유의수준에 거의 근접하기 때문에 유의수준을 어떻게 설정하는 지에 따라서 이분산성에 대한 유의미한 증거가 될 수 있다.</p>
+<p>test결과 유의확률이 0.058정도로 유의수준 5%이내에서 유의미하지 않다. 따라서 귀무가설을 기각할 만한 충분한 근거로 볼 수 있고 등분산성을 가정할 수 있다. 하지만 유의확률이 유의수준에 거의 근접하기 때문에 유의수준을 어떻게 설정하는 지에 따라서 이분산성에 대한 유의미한 증거가 될 수 있다.</p>
 <ol start="3" style="list-style-type: decimal">
 <li></li>
 </ol>
@@ -701,7 +701,7 @@ summary(OLS)</code></pre>
 ## Residual standard error: 13.4 on 800 degrees of freedom
 ## Multiple R-squared:  0.05274,    Adjusted R-squared:  0.04563 
 ## F-statistic: 7.423 on 6 and 800 DF,  p-value: 9.499e-08</code></pre>
-<p>OLS 추정결과, F통계량이 유의미하고 educ,age,agesq,restaurn 변수가 유의미하게 나온다. 하지만 R2 값 자체는 매우 낮은 편이다.</p>
+<p>OLS 추정 결과, F통계량이 유의미하고 educ,age,agesq,restaurn 변수가 유의미하게 나온다. 하지만 R2 값 자체는 매우 낮은 편이다.</p>
 <pre class="r"><code>RegModel = cigs~log(income)+log(cigpric)+educ+age+agesq+restaurn
 OLS = lm(RegModel,data = smoke)
 smoke$e = OLS$residuals
@@ -739,7 +739,7 @@ summary(FGLS)</code></pre>
 <pre class="r"><code>head(OLS$residuals)</code></pre>
 <pre><code>##          1          2          3          4          5          6 
 ## -10.332992 -10.754790  -7.719894 -10.260642  -7.504153   2.439415</code></pre>
-<p>두 잔차간의 차이가 있긴 하지만, 그렇게 크진 않다.</p>
+<p>두 잔차 간의 차이가 있긴 하지만, 그렇게 크진 않다.</p>
 <pre class="r"><code>uhat = FGLS$residuals
 yhat = FGLS$fitted</code></pre>
 <ol start="3" style="list-style-type: decimal">
@@ -770,7 +770,7 @@ summary(white)</code></pre>
 ## Residual standard error: 5087 on 804 degrees of freedom
 ## Multiple R-squared:  0.05745,    Adjusted R-squared:  0.05511 
 ## F-statistic:  24.5 on 2 and 804 DF,  p-value: 4.675e-11</code></pre>
-<p>R2 값은 0.027로 낮은 수치지만, F-통계량이 상당히 높고 p-value가 0에 수렴한다. 특히 I(y2^2)변수가 유의미한 값이 나온다. 이를 통해 오차와 독립변수의 함수관계가 없다는 귀무가설을 기각할 만한 충분한 증거를 확인할 수 있으며, 오차와 독립변수 사이에 함수관계가 있다고 볼 수 있다. 또한 오차와 독립변수 사이에 함수 관계가 있다면 이를 이분산성으로 간즈 할 수 있다.</p>
+<p>R2 값은 0.027로 낮은 수치지만, F-통계량이 상당히 높고 p-value가 0에 수렴한다. 특히 I(y2^2)변수가 유의미한 값이 나온다. 이를 통해 오차와 독립변수의 함수관계가 없다는 귀무가설을 기각할 만한 충분한 증거를 확인할 수 있으며, 오차와 독립변수 사이에 함수관계가 있다고 볼 수 있다. 또한 오차와 독립변수 사이에 함수 관계가 있다면 이를 이분산성으로 간주 할 수 있다.</p>
 <ol start="4" style="list-style-type: decimal">
 <li></li>
 </ol>
@@ -881,7 +881,7 @@ coeftest(OLS)</code></pre>
 ## log(exppp)   3.524751   2.376165   1.4834    0.1382    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>어떠한 경우라도 heteroskedasticity-robust한 모델의 표준오차가 OLS 모델보다 언제나 다소 크다.</p>
+<p>어떠한 경우라도 heteroscedasticity-robust한 모델의 표준오차가 OLS 모델보다 언제나 다소 크다.</p>
 <ol start="2" style="list-style-type: decimal">
 <li></li>
 </ol>
@@ -964,8 +964,8 @@ coeftest(WLS)</code></pre>
 <div id="chapter-10" class="section level3">
 <h3>CHAPTER 10</h3>
 </div>
-<div id="c7---1" class="section level3">
-<h3>C7 - (1)</h3>
+<div id="c7-1" class="section level3">
+<h3>C7 (1)</h3>
 <pre class="r"><code>data(&quot;consump&quot;)
 
 OLS = lm(consump$gc~consump$gy)
@@ -989,15 +989,174 @@ summary(OLS)</code></pre>
 ##   (1 observation deleted due to missingness)
 ## Multiple R-squared:  0.6787, Adjusted R-squared:  0.6692 
 ## F-statistic: 71.81 on 1 and 34 DF,  p-value: 6.754e-10</code></pre>
-<p>gc = 0.008079 + 0.570781gy n = 35 R2 = 0.6787<br />
-회귀 분석 결과, 소득의 상승률이 1퍼센트 포인트 오르다면 소비 상승률이 0.571퍼센트 포인트 가량 오른다고 볼 수 있다.<br />
-gy변수의 t값이 8.5정도롤 높기 떄문에 추정량이 유의미하다.</p>
+<p>gc = 0.008079 + 0.570781gy n = 36 R2 = 0.6787<br />
+회귀 분석 결과, 소득의 상승률이 1퍼센트 포인트 오른다면 소비 상승률이 0.571퍼센트 포인트 가량 오른다고 볼 수 있다.<br />
+gy변수의 t값이 8.5정도롤 높기 때문에 추정량이 유의미하다.</p>
 </div>
 <div id="chapter-12" class="section level3">
 <h3>CHAPTER 12</h3>
 </div>
-<div id="c6---1" class="section level3">
-<h3>C6 - (1)</h3>
+<div id="c6-1" class="section level3">
+<h3>C6 (1)</h3>
+<pre class="r"><code>uhat = OLS$residuals
+AR1 = lm(uhat[1:35]~uhat[2:36])
+summary(AR1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = uhat[1:35] ~ uhat[2:36])
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.013492 -0.003443 -0.001252  0.004614  0.011512 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)  0.0002712  0.0012088   0.224    0.824
+## uhat[2:36]  -0.0845160  0.1689014  -0.500    0.620
+## 
+## Residual standard error: 0.007151 on 33 degrees of freedom
+## Multiple R-squared:  0.00753,    Adjusted R-squared:  -0.02254 
+## F-statistic: 0.2504 on 1 and 33 DF,  p-value: 0.6201</code></pre>
+<p>AR를 검증한 결과, t 값이 굉장히 낮고 유의확률도 매우 높다. 따라서 두 변수사이의 함수 관계가 있다고 보기 어려우며, 시계열적인 상관관계를 갖는다고 볼 증거는 없다.</p>
+</div>
+<div id="c7" class="section level3">
+<h3>C7</h3>
+<ol style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>data = (barium)
+
+OLS = lm(log(chnimp)~log(chempi)+log(gas)+log(rtwex)+befile6+affile6+afdec6, data = barium)
+
+library(orcutt)
+
+summary(cochrane.orcutt(OLS))</code></pre>
+<pre><code>## Call:
+## lm(formula = log(chnimp) ~ log(chempi) + log(gas) + log(rtwex) + 
+##     befile6 + affile6 + afdec6, data = barium)
+## 
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -37.322241  23.221406  -1.607  0.11057    
+## log(chempi)   2.947434   0.645559   4.566 1.19e-05 ***
+## log(gas)      1.054858   0.990903   1.065  0.28917    
+## log(rtwex)    1.136918   0.513511   2.214  0.02867 *  
+## befile6      -0.016372   0.320722  -0.051  0.95937    
+## affile6      -0.033082   0.323152  -0.102  0.91863    
+## afdec6       -0.577158   0.343454  -1.680  0.09541 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.5756 on 123 degrees of freedom
+## Multiple R-squared:  0.1924 ,  Adjusted R-squared:  0.153
+## F-statistic: 4.9 on 6 and 123 DF,  p-value: &lt; 1.65e-04
+## 
+## Durbin-Watson statistic 
+## (original):    1.45841 , p-value: 1.688e-04
+## (transformed): 2.06330 , p-value: 4.91e-01</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>library(prais)
+prais_winsten(log(chnimp)~log(chempi)+log(gas)+log(rtwex)+befile6+affile6+afdec6, data = barium)</code></pre>
+<pre><code>## Iteration 0: rho = 0
+## Iteration 1: rho = 0.2708
+## Iteration 2: rho = 0.291
+## Iteration 3: rho = 0.293
+## Iteration 4: rho = 0.2932
+## Iteration 5: rho = 0.2932
+## Iteration 6: rho = 0.2932
+## Iteration 7: rho = 0.2932</code></pre>
+<pre><code>## 
+## Call:
+## prais_winsten(formula = log(chnimp) ~ log(chempi) + log(gas) + 
+##     log(rtwex) + befile6 + affile6 + afdec6, data = barium)
+## 
+## Coefficients:
+## (Intercept)  log(chempi)     log(gas)   log(rtwex)      befile6  
+##   -37.07742      2.94095      1.04637      1.13279     -0.01648  
+##     affile6       afdec6  
+##    -0.03316     -0.57681  
+## 
+## AR(1) coefficient rho: 0.2932</code></pre>
+<p>두 모델의 회귀계수가 완벽하게 동일하진 않지만 차이가 크지 않다. 사실 prais_winsten은 t=1인 경우를 사용하고 cochrane.orcutt 모델은 사용하지 않기 때문에 두 모델이 어느정도 차이를 날 것으로 기대할 수 있다. 그러나 n이 충분히 커지면 이 차이는 0에 가까워 질 것이다.</p>
+</div>
+<div id="c14" class="section level3">
+<h3>C14</h3>
+<ol style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>data=(minwage)
+OLS = lm(gwage232~gmwage+gcpi, data = minwage)
+uhat = OLS$residuals
+AR1 = lm(uhat[1:length(uhat)-1]~uhat[2:length(uhat)])
+summary(AR1) </code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = uhat[1:length(uhat) - 1] ~ uhat[2:length(uhat)])
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.044786 -0.004365 -0.001162  0.004437  0.040902 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)           5.524e-06  3.187e-04   0.017   0.9862  
+## uhat[2:length(uhat)] -9.739e-02  4.036e-02  -2.413   0.0161 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.007871 on 608 degrees of freedom
+## Multiple R-squared:  0.009487,   Adjusted R-squared:  0.007857 
+## F-statistic: 5.823 on 1 and 608 DF,  p-value: 0.01611</code></pre>
+<p>테스트 결과,두변수로 만든 모델에 외생성이 존재한다. t = -2.413이고 유의확률이 0.016로 낮은 편이다. 또한 상관계수의 부호가 음수이기 때문에 negative serial 상관관계를 갖는다.</p>
+<ol start="2" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>coeftest(OLS,vcov = NeweyWest(OLS,lag=12))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept) 0.0021842  0.0003087  7.0755 4.115e-12 ***
+## gmwage      0.1505713  0.0449533  3.3495 0.0008596 ***
+## gcpi        0.2435222  0.0620704  3.9233 9.730e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(OLS)</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##               Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept) 0.00218422 0.00042127  5.1849 2.947e-07 ***
+## gmwage      0.15057135 0.00965736 15.5914 &lt; 2.2e-16 ***
+## gcpi        0.24352225 0.08212797  2.9652  0.003144 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>두 모델 모두 유의미한 추정량임에는 변함이 없지만, 각 변수의 표준오차가 크케 변화했다. gmwage의 경우 표준오차가 거의 4.5배가량 증가했고 이에 따라 t-value값도 작아지고 유의확률도 커졌다. 반면 gcpi는 표준오차가 0.02정도 줄어들었고 더욱 유의미해졌다.</p>
+<ol start="3" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>coeftest(OLS, vcov = vcovHC(OLS,type = &#39;HC0&#39;))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept) 0.0021842  0.0003991  5.4728 6.483e-08 ***
+## gmwage      0.1505713  0.0448875  3.3544 0.0008448 ***
+## gcpi        0.2435222  0.0903565  2.6951 0.0072307 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>세 가지 경우를 비교해 본 결과, 세 모델 모두 변수들은 유의미하며 결과가 유의미한 수준으로 달라지지 않는다. 따라서 이 경우 serial correlation 과 heteroedaticity가 큰 문제 되지 않는다.</p>
+<ol start="4" style="list-style-type: decimal">
+<li></li>
+</ol>
+<pre class="r"><code>bptest(gwage232~gmwage+gcpi,~gmwage+gcpi, data = minwage)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  gwage232 ~ gmwage + gcpi
+## BP = 265.6, df = 2, p-value &lt; 2.2e-16</code></pre>
+<p>bptest결과 BP통계량이 265정도로 매우 높고 p-value도 0에 수렴한다. 따라서 귀무가설을 기각하고 독립변수와 오차사이에 함수관계가 있다고 할 수 있으며 강한 이분산성의 증거가된다.</p>
 </div>
 
 
