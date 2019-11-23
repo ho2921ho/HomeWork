@@ -1,0 +1,24 @@
+cann canrgdp deun espgdpvs espn fdrrgdps fm2 fran frargdp fygm3 gbrn gbrrgdp gdpq itan itargdp jpngnp85 jpnn lhem lpmhu p16 punew
+  
+  Obs:   192 obs(1947Q1 - 1994Q4)
+
+	cann: Total employee hours of Canada
+     canrgdp: GDP of Canada
+	deun: Total employee hours of Germany
+    espgdpvs: GDP of Spain
+        espn: Total employee hours of Spain
+    fdrrgdps: GDP of Germany
+         fm2: M2 of USA
+        fran: Total employee hours of France
+     frargdp: GDP of France
+       fygm3: 3-month T-bill rate
+        gbrn: Total employee hours of United Kingdom
+     gbrrgdp: GDP of United Kingdom
+        gdpq: Quarterly GDP of United States
+        itan: Total employee hours of Italy
+     itargdp: GDP of Italy
+    jpngnp85: GDP of Japan
+        jpnn: Total employee hours of Japan
+        lhem: Civil labor force total
+       lpmhu: Employee hours in non agrigultural establishments in United States
+       punew: CPI in United States
