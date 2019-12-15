@@ -1,22 +1,21 @@
-food = read.csv('C:/Users/dongkeon/Desktop/food.csv')
+Data_inflation = read.csv('C:/GitHub/HomeWork/Time_series/Data_inflation.csv')
 
-x = food$income
+yt_1 = Data_inflation$근원인플레이션율[2:288]
+xt_1 = Data_inflation$WTI.현물유가등락률[2:288]
+yt = Data_inflation$근원인플레이션율[1:287]
 
-y = food$food_exp
-
-plot(x,y)
-reg_fit <- lm(y~x)
+reg_fit <- lm(yt~yt_1+xt_1)
 summary(reg_fit)
 
 library(MASS)
-p <- 1
-nn <- length(y)
-N <- 10000 #만번 반복.
+p <- 2
+nn <- length(yt)
+N <- 10000
 
-X <- cbind(rep(1,nn),x) # 상수항이 있는 모형을 사용하는 의미.
-beta.hat <- solve(t(X)%*%X)%*%t(X)%*%y # OLS 베타
+X <- cbind(rep(1,nn),yt_1,xt_1) 
+beta.hat <- solve(t(X)%*%X)%*%t(X)%*%yt 
 
-s2 <- t(y)%*%(diag(nn)-X%*%solve(t(X)%*%X)%*%t(X))%*%y/(nn-p-1) # 
+s2 <- t(yt)%*%(diag(nn)-X%*%solve(t(X)%*%X)%*%t(X))%*%yt/(nn-p-1) # 
 
 vec.b <- matrix(0,nrow=p+1,ncol=N)
 
@@ -26,30 +25,34 @@ for (m in 1:N){
   r <- rgamma(1,(nn-2)/2,(nn-2)*s2/2)
   vec.sigma2[m] <- 1/r
   b <- mvrnorm(1,beta.hat,solve(t(X)%*%X)/r) # 베타가 정규분포를 따른다고 가정했기에.
-
+  
   vec.b[,m] <- b
 }
-# 파라미터 업데이트 과정. 
 
-# 결과확인
-
-hist(vec.b[1,],density=-1,yaxt="n",ylab="",xlab="beta0",cex=2,nclass=50,main="")
-hist(vec.b[2,],density=-1,yaxt="n",ylab="",xlab="beta1",cex=2,nclass=50,main="")
-hist(vec.sigma2,density=-1,yaxt="n",ylab="",xlab="sigma2",cex=2,nclass=50,main="")
+hist(vec.b[1,],density=-1,yaxt="n",ylab="",xlab="beta0",cex=2,nclass=50,main="",prob = TRUE)
+lines(density(vec.b[1,]), col="blue", lwd=2) 
+hist(vec.b[2,],density=-1,yaxt="n",ylab="",xlab="beta1",cex=2,nclass=50,main="",prob = TRUE)
+lines(density(vec.b[2,]), col="blue", lwd=2) 
+hist(vec.b[3,],density=-1,yaxt="n",ylab="",xlab="beta2",cex=2,nclass=50,main="",prob = TRUE)
+lines(density(vec.b[3,]), col="blue", lwd=2) 
+hist(vec.sigma2,density=-1,yaxt="n",ylab="",xlab="sigma2",cex=2,nclass=50,main="",prob = TRUE)
+lines(density(vec.sigma2), col="blue", lwd=2) 
 mean(vec.b[1,]); sd(vec.b[1,])
 mean(vec.b[2,]); sd(vec.b[2,])
+mean(vec.b[3,]); sd(vec.b[2,])
 mean(vec.sigma2); sd(vec.sigma2)
 
 
 # 베이지안의 목표는 무엇? 예측이죠.
 
 vec.new <- rep(0,N)
-xnew <- 35
+xnew <- 0.25
 for (m in 1:N) {
   r <- rgamma(1,(nn-2)/2,(nn-2)*s2/2)
   b <- mvrnorm(1, beta.hat,solve(t(X)%*%X)/r)
-  vec.new[m] <- rnorm(1, mean=b[1]+b[2]*xnew, sd=sqrt(1/r))
+  vec.new[m] <- rnorm(1, mean=b[1]+b[3]*xnew, sd=sqrt(1/r))
 }
+
 hist(vec.new,density=-1, yaxt="n",ylab="",xlab="ynew",cex=2,nclass=50,main="")
 
 mean(vec.new)
