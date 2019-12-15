@@ -1,36 +1,37 @@
-import pandas as pd
 
-inflation = pd.read_csv(r'C:\GitHub\HomeWork\Time_series\Data_inflation.csv', engine = 'python')
+import warnings
+warnings.simplefilter('ignore')
 
-xt_1 = inflation.iloc[:,1][0:286]
-yt_1 = inflation.iloc[:,2][0:286]
-yt = inflation.iloc[:,2][1:287]
+from arch import arch_model
 
-import pymc3 as pm
-import numpy as np
-np.random.seed(1000)
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+def compute_variance(df):
+    am = arch_model(df['Close'], vol='Egarch', p=1, o=0, q=1, dist='Normal')
+    res = am.fit(update_freq=5)
+    forecasts = res.forecast()
+    print(forecasts.variance.iloc[-3:])
 
-with pm.Model() as model: 
-        # PyMC3의 모형은 with 문 안에서 사용된다.
-    # 사전 확률 정의
-    beta0 = pm.Normal('beta0', mu=0.5, sd=0.25)
-    beta1 = pm.Normal('beta1', mu=0.5, sd=0.25)
-    beta2 = pm.Normal('beta2', mu=0, sd=0.25)
-    sigma = pm.InverseGamma('sigma', 10, 2)
-    
-    # 선형 회귀선 정의
-    y_est = beta0 + beta1 * yt_1 + beta2 * xt_1 
-    
-    # 우도 정의 
-    likelihood = pm.Normal('y', mu=y_est, sd=sigma, observed=yt)
-    
-    # 추정 과정
-    start = pm.find_MAP()
-      # 최적화를 사용하여 시작값 추정
-    step = pm.NUTS(scaling= start)
-      # MCMC 샘플링 알고리즘 인스턴스 생성
-    trace = pm.sample(100, step, start=start, progressbar=False)
-      # NUTS 샘플링을 사용하여 100개의 사후 샘플 생성
+
+
+from datetime import datetime
+import pandas_datareader.data as wb
+
+# 
+start = datetime(1995,7,1)
+end = datetime(2000,6,30)
+ 
+ko = wb.DataReader('^KS11','yahoo',start,end)
+ni = wb.DataReader('^N225','yahoo',start,end)
+snp = wb.DataReader('^GSPC','yahoo',start,end)
+
+compute_variance(ko)
+compute_variance(ni)
+compute_variance(snp)
+
+start = datetime(2005,7,1)
+end = datetime(2010,6,30)
+ 
+ko = wb.DataReader('^KS11','yahoo',start,end)
+ni = wb.DataReader('^N225','yahoo',start,end)
+snp = wb.DataReader('^GSPC','yahoo',start,end)
+
 
