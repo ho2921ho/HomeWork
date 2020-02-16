@@ -40,16 +40,19 @@ driver.find_element_by_xpath("//*[@id='password']").send_keys(password)
 driver.find_element_by_xpath('//*[@id="flogin"]/div[2]/fieldset/ul/li[4]/a').click()
 driver.find_element_by_xpath('//*[@id="flogin"]/div[2]/fieldset/ul/li[4]/a').click()
 '''
-
+idx
 
 for week, max_page in enumerate(idx):
+    print(week)
+    if week == 0 or week == 1:
+        continue
     for page in range(1,max_page+1):
         page3 = '{0:03}'.format(page)
         page2 = '{0:02}'.format(page)
         url = 'http://class14.campus21.co.kr/cpclassroom/onlinestudy/246827/week{}/{}.asp?part=01{}01&page={}'.format(week+1,page3,page2,page3)
         driver.get(url)
         term = random.randrange(90,180)
-        print(time)
+        print(term)
         time.sleep(term)
     break
 
@@ -71,9 +74,26 @@ def mouse_click(x, y):
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
 
+end = 0
 while True:
-    term = random.randrange(1,30)
+    term = random.randrange(1,25)
     print(term)
     time.sleep(term)
+    mouse_click(1059, 336)
+    time.sleep(3)
     mouse_click(1570, 621)
+    end += 1
+    if end == 120:
+        break
 
+end = 0
+while True:
+    term = random.randrange(10,25)
+    print(term)
+    time.sleep(term)
+    mouse_click(1002, 459)
+    time.sleep(3)
+    mouse_click(1581, 671)
+    end += 1
+    if end == 10000:
+        break
