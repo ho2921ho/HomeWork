@@ -5,6 +5,7 @@ import pandas as pd
 
 s= str(datetime.datetime.now()) + 'TwoPoint_updated'
 isfile = os.path.isfile('log.txt')
+import requests
 
 if isfile:
     with open('log.txt', 'a') as f: #파일이 있으면 마지막 행에 추가
@@ -157,10 +158,7 @@ kospi_stocks['key_0'] = kospi_stocks['종목코드']
 indx_df = indx_df.merge(kospi_stocks[['key_0','회사명']],how = 'left', on = 'key_0')
 
 
-#
-import requests
-from bs4 import BeautifulSoup
-
+##
 m_s = []
 for code in tqdm(indx_df['key_0']):
     url = 'https://finance.naver.com/item/sise.nhn?code='+code
@@ -175,4 +173,13 @@ name = 'TwoPoint_indx'
 indx_df.to_csv('C:\DATA\Stock_data\TwoPoint\{}_{}.csv'.format(name,now))
     
 # 모두 클래스화, m유연화, 데이터 갱신, 지표 저장.111770
+##
+s= str(datetime.datetime.now()) + 'TwoPoint_updated'
+isfile = os.path.isfile('log.txt')
 
+if isfile:
+    with open('log.txt', 'a') as f: #파일이 있으면 마지막 행에 추가
+        f.write(s+'\n')
+else :
+    with open('log.txt', 'w') as f: #파일이 없으면 log.txt 생성하고 입력
+        f.write(s+'\n')

@@ -1,16 +1,5 @@
 import datetime
 import os
-
-s= str(datetime.datetime.now()) + 'Stock_Data_saved'
-isfile = os.path.isfile('log.txt')
-
-if isfile:
-    with open('log.txt', 'a') as f: #파일이 있으면 마지막 행에 추가
-        f.write(s+'\n')
-else :
-    with open('log.txt', 'w') as f: #파일이 없으면 log.txt 생성하고 입력
-        f.write(s+'\n')
-
 import urllib.parse
 import pandas as pd
 import pickle
@@ -63,8 +52,19 @@ for code in tqdm(kospi_stocks.종목코드):
     dfs[code] = df
 
 now = datetime.datetime.now().date().strftime("%y%m%d_%H%M%S")
-
 name = 'raw_data' + now
 with open('C:\DATA\Stock_data\{}.pickle'.format(name),'wb') as f:
     pickle.dump(dfs, f, pickle.HIGHEST_PROTOCOL) 
+
+
+##
+s= str(datetime.datetime.now()) + 'Stock_Data_saved'
+isfile = os.path.isfile('log.txt')
+
+if isfile:
+    with open('log.txt', 'a') as f: #파일이 있으면 마지막 행에 추가
+        f.write(s+'\n')
+else :
+    with open('log.txt', 'w') as f: #파일이 없으면 log.txt 생성하고 입력
+        f.write(s+'\n')
 
